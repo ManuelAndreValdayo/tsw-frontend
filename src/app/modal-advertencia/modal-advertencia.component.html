@@ -1,0 +1,31 @@
+<div *ngIf="mostrar" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 *ngIf="tipoAdvertencia === 'confirmación'">Confirmación</h2>
+        <h2 *ngIf="tipoAdvertencia === 'error'">Error</h2>
+        <h2 *ngIf="tipoAdvertencia === 'info'">Información</h2>
+        <button class="close-button" (click)="cancelar()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>{{ mensaje }}</p>
+      </div>
+      <div class="modal-footer" *ngIf="tipoAdvertencia === 'confirmación'">
+        <!-- <button (click)="confirmar()" class="btn btn-danger">Aceptar</button> -->
+        <!-- <button (click)="cancelar()" class="btn btn-secondary">Cancelar</button> -->
+        <div class="botonAdvertencia">
+          <div (click)="confirmar()" class="contenidoBotonAdvertencia">
+            <p>Aceptar</p>
+          </div>
+        </div>
+        <div class="botonAdvertencia">
+          <div (click)="cancelar()" class="contenidoBotonAdvertencia">
+            <p>Cancelar</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" *ngIf="tipoAdvertencia !== 'confirmación'">
+        <button (click)="cancelar()" class="btn btn-primary">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  

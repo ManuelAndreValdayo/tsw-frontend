@@ -1,0 +1,84 @@
+<form [formGroup]="registerForm">
+    <div class="formularioRegistrar">
+      <div>
+        <p style="margin-left: 10px;">REGISTER 1</p>
+      </div>
+  
+      <div class="formularioRegistrarCampos">
+        
+        <!-- EMAIL -->
+        <input 
+          placeholder="  *EMAIL" 
+          type="text" 
+          name="emailRegistro" 
+          id="emailRegistro" 
+          formControlName="email"
+          [ngClass]="{'input-error': registerForm.controls['email'].invalid && registerForm.controls['email'].touched}"
+        />
+        <!-- Mensajes de error para el email -->
+        <div *ngIf="registerForm.controls['email'].errors?.['required'] && registerForm.controls['email'].touched" class="formWarning">
+          *Debes de introducir el email
+        </div>
+        <div *ngIf="registerForm.controls['email'].errors?.['email'] && registerForm.controls['email'].touched" class="formWarning">
+          *El formato del email es incorrecto
+        </div>
+        
+        <!-- NOMBRE -->
+        <input placeholder="  NOMBRE" type="text" name="nombreRegistro" id="nombreRegistro" formControlName="nombre">
+  
+        <!-- APELLIDOS -->
+        <input placeholder="  APELLIDOS" type="text" name="apellidosRegistro" id="apellidosRegistro" formControlName="apellidos">
+  
+        <!-- TELEFONO -->
+        <input placeholder="  TELEFONO" type="number" name="telefonoRegistro" id="telefonoRegistro" formControlName="telefono">
+  
+        <!-- PASSWORD -->
+        <input 
+          placeholder="  *PASSWORD" 
+          type="password" 
+          name="password1" 
+          id="password1" 
+          formControlName="pwd1"
+          [ngClass]="{'input-error': registerForm.controls['pwd1'].invalid && registerForm.controls['pwd1'].touched}"
+        />
+        <!-- Mensajes de error para el password -->
+        <div *ngIf="registerForm.controls['pwd1'].errors?.['required'] && registerForm.controls['pwd1'].touched" class="formWarning">
+          *Debes de introducir la contraseña
+        </div>
+        <div *ngIf="registerForm.controls['pwd1'].errors?.['minlength'] && registerForm.controls['pwd1'].touched" class="formWarning">
+          *La contraseña debe tener al menos 6 caracteres
+        </div>
+        <div *ngIf="registerForm.controls['pwd1'].errors?.['passwordStrength'] && registerForm.controls['pwd1'].touched" class="formWarning">
+          *La contraseña no cumple con los requisitos
+        </div>
+  
+        <!-- PASSWORD CONFIRMATION -->
+        <input 
+          placeholder="  *PASSWORD CONFIRMATION" 
+          type="password" 
+          name="password2" 
+          id="password2" 
+          formControlName="pwd2"
+          [ngClass]="{'input-error': registerForm.controls['pwd2'].invalid && registerForm.controls['pwd2'].touched}"
+        />
+        <!-- Mensaje de error para la confirmación de contraseña -->
+        <div *ngIf="registerForm.controls['pwd2'].errors?.['required'] && registerForm.controls['pwd2'].touched" class="formWarning">
+          *Debes de confirmar la contraseña
+        </div>
+        <div *ngIf="registerForm.hasError('passwordMismatch') && registerForm.controls['pwd2'].touched" class="formWarning">
+          *Las contraseñas no coinciden
+        </div>
+  
+        <!-- Botón de Registrar -->
+        <div style="display: flex; justify-content: space-around;">
+          <div class="botonRegistrar" (click)="validarFormulario()">
+            <p>REGISTRAR</p>
+          </div>
+        </div>
+        <div id="login" style="display: flex;justify-content: flex-end;">
+          <a href="/Login">¿Ya tienes una cuenta?</a>
+        </div>
+      </div>
+    </div>
+  </form>
+  

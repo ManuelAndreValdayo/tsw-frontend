@@ -1,0 +1,83 @@
+<div *ngIf="isAuthenticated && isAcepted">
+    <div class="buscador">
+        <div class="nombreBuscador">
+            <div style="display: flex; padding-left: 20px;">
+                <i style="margin-right: 5px;" class="fa-duotone fa-solid fa-magnifying-glass"></i>
+                <p><b>BUSCADOR PRODUCTOS</b></p>
+            </div>
+            <div style="display: flex;">
+                <div class="botonAnadir">
+                    <div class="contenidoBotonAnadir" (click)="insertarProducto()">
+                        <i style="margin-right: 15px;" class="fa-solid fa-plus"></i>
+                        <p>AÑADIR PRODUCTO</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="contenidoBuscador">
+            <div>
+                <div class="contenedorFlex">
+                    <input type="text" placeholder="nombre producto">
+                    <div class="botonBuscar">
+                        <div class="contenidoBotonBuscar">
+                          <p>BUSCAR</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    </div>
+    <div id="contenedorProductos">
+        <div style="display: flex; flex-direction: row;">
+            <div class="acciones"></div>
+            <div style="width: 100%; display: flex;">
+                <div class="atributo campoFormAncho_70">
+                    <p><b>NOMBRE</b></p>
+                </div>
+                <div class="atributo campoFormAncho_30">
+                    <p><b>CANTIDAD</b></p>
+                </div>
+            </div>
+            <div class="info campoFormAncho_10"></div>
+        </div>
+        <div class="divproducto" *ngFor="let producto of productos">
+            <div class="productoAcciones">
+                <i class="fa-solid fa-pen" title="Modificar producto" (click)="modificarProducto(producto.id)"></i>
+                <!-- <i class="fa-solid fa-trash" title="Eliminar producto" (click)="eliminarProducto('confirmación', '¿Estás seguro de eliminar esta producto?', producto.id)"></i> -->
+            </div>
+            <div style="width: 100%; display: flex;">
+                <div class="productoAtributo campoFormAncho_70">
+                    <p>{{ producto.nombre || 'Sin nombre' }}</p>
+                </div>
+                <div class="productoAtributo campoFormAncho_30">
+                    <p>{{ producto.cantidad || 'Sin nombre' }}</p>
+                </div>
+            </div>
+            <div class="productoInfo campoFormAncho_10"></div>
+        </div>
+        <div *ngIf="productos.length == 0" class="sinProductos">
+            <p>NO SE HAN ENCOTRADO PRODUCTOS</p>
+        </div>
+    </div>
+
+</div>
+<div *ngIf="isAcepted == false">
+    <div class="accesoListaCompartida">
+        <p>¿Quieres unirte a la lista?</p>
+        <div class="botonesAcceso">
+            <div class="botonAdvertencia">
+                <div (click)="confirmar()" class="contenidoBotonAdvertencia">
+                  <p>Aceptar</p>
+                </div>
+              </div>
+              <div class="botonAdvertencia">
+                <div (click)="cancelar()" class="contenidoBotonAdvertencia">
+                  <p>Cancelar</p>
+                </div>
+              </div>
+        </div>
+    </div>
+</div>
+<app-mto-productos *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idProducto]="idProducto" [idLista]="idLista" [listaCompartida]="true"></app-mto-productos>
+<app-modal-advertencia *ngIf="isAcepted == false" [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="eliminarProductoConfirmada()" (onCancelar)="cerrarModal()"></app-modal-advertencia>

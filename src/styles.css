@@ -1,1 +1,77 @@
 /* You can add global styles to this file, and also import other style files */
+*{
+    font-family: "Roboto", sans-serif;
+}
+body{
+    margin: 0px;
+
+
+}
+input{
+    height: 30px;
+    border-radius: 5px;
+    margin: 10px;
+    border: none;
+    padding-left: 10px;
+    background: #dadada;
+}
+.campoFormAncho_5{
+    width: 5% !important;
+}
+.campoFormAncho_10{
+    width: 10% !important;
+}
+.campoFormAncho_15{
+    width: 15% !important;
+}
+.campoFormAncho_20{
+    width: 20% !important;
+}
+.campoFormAncho_25{
+    width: 25% !important;
+}
+.campoFormAncho_30{
+    width: 30% !important;
+}
+.campoFormAncho_35{
+    width: 35% !important;
+}
+.campoFormAncho_40{
+    width: 40% !important;
+}
+.campoFormAncho_45{
+    width: 45% !important;
+}
+.campoFormAncho_50{
+    width: 50% !important;
+}
+.campoFormAncho_55{
+    width: 55% !important;
+}
+.campoFormAncho_60{
+    width: 60% !important;
+}
+.campoFormAncho_65{
+    width: 65% !important;
+}
+.campoFormAncho_70{
+    width: 70% !important;
+}
+.campoFormAncho_75{
+    width: 75% !important;
+}
+.campoFormAncho_80{
+    width: 80% !important;
+}
+.campoFormAncho_85{
+    width: 85% !important;
+}
+.campoFormAncho_90{
+    width: 90% !important;
+}
+.campoFormAncho_95{
+    width: 95% !important;
+}
+.campoFormAncho_100{
+    width: 100% !important;
+}

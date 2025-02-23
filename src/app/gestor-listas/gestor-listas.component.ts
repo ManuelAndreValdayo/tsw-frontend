@@ -1,0 +1,127 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MtoListasComponent } from '../mto-listas/mto-listas.component';
+import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
+import { UserService } from '../user.service';
+import {INSERTAR, MODIFICAR, ELIMINAR} from '../shared/constantes';
+import { RouterLink } from '@angular/router';
+import {MtoUrlComponent} from '../mto-url/mto-url.component';
+import * as CryptoJS from 'crypto-js';
+
+interface Lista {
+  id: number;
+  nombre: string;
+  idUsuario: number;
+  Nombre: string;
+  id_usuario: number;
+}
+
+@Component({
+  selector: 'app-gestor-listas',
+  standalone: true,
+  imports: [CommonModule, MtoListasComponent, ModalAdvertenciaComponent, RouterLink, MtoUrlComponent],
+  templateUrl: './gestor-listas.component.html',
+  styleUrls: ['./gestor-listas.component.css'],
+})
+export class GestorListasComponent {
+  @Output() onInsertar = new EventEmitter<void>(); // Confirmar acción
+  @Input() onModificar = new EventEmitter<void>(); // Confirmar acción
+  isModalOpen = false;
+  listas: Lista[] = []; // Declaramos listas como un array de objetos Lista
+  mostrarModal: boolean = false; // Controla si el modal está visible
+  tipoAdvertencia: string = ''; // Tipo de advertencia actual
+  mensajeModal: string = ''; // Mensaje del modal
+  idLista: number = 0;
+  intAccion: number = 0;
+  url: string = '';
+  sharedModal:boolean = false;
+  secretKey = 'miClaveSecreta123';
+
+  constructor(private userService: UserService) {}
+
+  // Abrir el modal con un tipo y mensaje específico
+  abrirModal(tipo: string, mensaje: string, id: number) {
+    this.tipoAdvertencia = tipo;
+    this.mensajeModal = mensaje;
+    this.mostrarModal = true;
+    this.idLista = id;
+  }
+
+  // Cerrar el modal
+  cerrarModal() {
+    this.mostrarModal = false;
+  }
+
+  // Confirmar acción (por ejemplo, eliminar una lista)
+  eliminarListaConfirmada() {
+    this.fncEliminarLista(this.idLista);
+    this.cerrarModal();
+  }
+  modificarLista(id: number){
+    this.openModal();
+    this.intAccion = MODIFICAR;
+    this.idLista = id;
+  }
+  insertarLista(){
+    this.openModal();
+    this.intAccion = INSERTAR;
+  }
+  eliminarLista(tipo: string, mensaje: string, id: number){
+    this.tipoAdvertencia = tipo;
+    this.mensajeModal = mensaje;
+    this.mostrarModal = true;
+    this.idLista = id;
+  }
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  ngOnInit() {
+    this.userService.obtenerListasUsuario().subscribe({
+      next: (response) => {
+        // Verificar si la respuesta es un string y parsearlo si es necesario
+        if (typeof response === 'string') {
+          try {
+            this.listas = JSON.parse(response); // Convertimos a array si es un string
+          } catch (error) {
+            console.error('Error al parsear el JSON:', error);
+          }
+        } else {
+          this.listas = response; // Si ya es un array, simplemente lo asignamos
+        }
+
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos:', error);
+      },
+    });
+  }
+
+  fncModificarLista(id: any){
+    this.userService
+  }
+  fncEliminarLista(id: number){
+    console.log("opa");
+    this.userService.eliminarLista(id).subscribe({
+      next: (response: any) => {
+        if(response == true){
+          window.location.reload();
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos:', error);
+      },
+    });
+  }
+
+  // Función para encriptar
+  compartirLista(idLista: number){
+    const numberAsString = idLista.toString(); // Convertir el número a string
+    const encrypted = CryptoJS.AES.encrypt(numberAsString, this.secretKey).toString();
+    this.url = `${window.location.origin}/listaCompartida/${encodeURIComponent(encrypted)}`;
+    this.openSharedModal();
+  }
+  openSharedModal(){
+    this.sharedModal = true;
+  }
+}

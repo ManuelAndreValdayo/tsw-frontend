@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="conectar()">Conectar</button>
+    <br>
+    <span id="estado">No contectado</span>
+    <input type="text" id="mensaje"><button onclick="enviar()">Enviar</button>
+    <div id="mensajes"></div>
+</body>
+<script>
+    let ws
+    function enviar(){
+        console.log("opa")
+        let texto = document.getElementById('mensaje').value;
+        ws.send(texto);
+    }
+
+    function conectar(){
+        ws = new WebSocket('wss://localhost:9000/wsChat');
+        ws.onopen = function(){
+            document.getElementById('estado').innerHTML = 'Conectado';
+        }
+        ws.onerror = function(e){
+            document.getElementById('estado').innerHTML = 'Error';
+        }
+        ws.onmessage = function(e){
+            let divMensaje = document.createElement('div');
+            divMensaje.innerHTML = e.data;
+            document.getElementById('mensajes').appendChild(divMensaje);
+        }
+    }
+</script>
+</html>

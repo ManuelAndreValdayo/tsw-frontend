@@ -1,0 +1,30 @@
+<form class='custom-form' [formGroup]= "loginForm">      
+  <div class="formularioLogin">
+    <div>
+      <p style="margin-left: 10px;">LOGIN 1</p>
+    </div>
+
+    <div class="formularioLoginCampos">
+      <input  type="email" formControlName="email" placeholder="Introduce tu email" name="email"/>
+        <div class="invalid-feedback" *ngIf= "this.loginForm.controls['email'].errors" >
+        </div>
+        <input type="password" placeholder="Introduce tu contrase&ntilde;a" formControlName="pwd"/>        
+      <!-- Botón de Login -->
+      <div style="display: flex; justify-content: space-around;">
+        <div class="botonLogin" (click)="onSubmit()">
+          <p>LOGIN</p>
+        </div>
+      </div>
+      <div id="registrar" style="display: flex;justify-content: flex-end;">
+        <a href="/Register">¿No tienes cuenta?</a>
+      </div>
+
+      <!-- <span>
+        <button class="btn btn-primary mr-1" [disabled]="loginForm.invalid">Logarse</button>
+        <button class="btn btn-secondary" type="reset" >Cancelar</button>
+      </span> -->
+    </div>
+  </div>
+
+
+  </form>

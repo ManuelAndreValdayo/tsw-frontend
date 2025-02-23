@@ -1,0 +1,22 @@
+.navegador{
+    display: flex;
+    background-color: black;
+    height: 50px;
+    color: white;
+    justify-content: flex-end;
+}
+
+.contenidoNavegador{
+    margin: 14px;
+}
+.contenidoNavegador a{
+    margin-right: 20px;
+    color: white !important;
+    text-decoration: none !important;
+}
+.gestionSecciones{
+    width: 10px;
+    height: 100%;
+    background-color: black;
+}
+
