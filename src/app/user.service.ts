@@ -124,6 +124,13 @@ export class UserService {
     }
     return this.http.get<any>(`${this.apiUrl}/checkLogin`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
+  checkPremium(){
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    return this.http.get<any>(`${this.apiUrl}/checkPremium`, { headers, responseType: 'text' as 'json', withCredentials : true})
+  }
 
   obtenerListasUsuario(){
     const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
@@ -147,6 +154,17 @@ export class UserService {
             }
     }
     return this.http.post<any>(`${this.apiUrl2}/crearInvitacion`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
+  }
+  agregarUserListaCompartida(){
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const tokenListaCompartida = (sessionStorage.getItem('tokenListaCompartida')) ? sessionStorage.getItem('tokenListaCompartida') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    let info = {
+      token: tokenListaCompartida
+    }
+    return this.http.post<any>(`${this.apiUrl2}/agregarUserListaCompartida`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
   eliminarLista(id: number){
     return this.http.delete<void>(`${this.apiUrl2}/eliminarLista/${id}`, {withCredentials : true})

@@ -32,6 +32,8 @@ export const routes: Routes = [
             }
         ]
     },
+    { path: 'Gestion', pathMatch: 'full', redirectTo: 'Gestion/listas' },
+    { path: 'gestion', pathMatch: 'full', redirectTo: 'Gestion/listas' },
     { path: 'listaCompartida/:id', component: EntrarListaCompartidaComponent, resolve: { auth: AuthResolver } },
 
 ];

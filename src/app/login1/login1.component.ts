@@ -70,9 +70,10 @@ export class Login1Component {
           next: (response) =>{
             this.submitted = true;
             localStorage.setItem('access_token', response);
-            if(AppConstants.URL.startsWith('/listaCompartida')){
-              this.router.navigate([AppConstants.URL]);
+            if(sessionStorage.getItem('tokenListaCompartida') != undefined && sessionStorage.getItem('tokenListaCompartida') != null){
+              this.router.navigate(['/listaCompartida/' + sessionStorage.getItem('tokenListaCompartida')]);
             }else{
+              console.log("No hay token de lista compartida");
               this.router.navigate(['/Gestion/listas']);
             }
           },

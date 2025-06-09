@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet, NavigationEnd, RouterLink } from '@angular/router';
 import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
@@ -18,7 +18,7 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './gestion-secciones.component.html',
   styleUrl: './gestion-secciones.component.css'
 })
-export class GestionSeccionesComponent {
+export class GestionSeccionesComponent implements OnInit {
   isActive:boolean = false;
   gestion1:boolean = false;
   gestion2:boolean = false;
@@ -29,11 +29,30 @@ export class GestionSeccionesComponent {
   isAuthenticated = false;
   stripe: Stripe | null = null; // Inicializa stripe como null
   sessionId: string = ''; // Aquí se guardará el session_id recibido desde el backend
-
+  isPremium: boolean = true; // Variable para verificar si el usuario es premium
   constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router, private stripeService: StripeService) {   
   
   }
-  
+  ngOnInit() {
+    this.userService.checkPremium().subscribe({
+      next: (response) => {
+        console.log('Respuesta de checkLogin:', response);
+        if(response== false) {
+          this.isPremium = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error al verificar el login:', error);
+      },
+    });
+
+    // Escuchar los eventos de navegación
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        // Aquí puedes manejar la lógica que necesites cuando se complete una navegación
+      }
+    });
+  }
   toogleHeight(gestion: number){
     switch(gestion){
       case 1:
@@ -45,23 +64,6 @@ export class GestionSeccionesComponent {
         this.gestion1 = false;
         this.gestion2 = !this.gestion2;
         break;
-    }
-  }
-  fncClickChincheta(){
-    if(this.isActive == false){
-      $(".gestionSecciones").css("clip-path","inset(0px 0px 0px 0px)");
-      $("#contenidoSecciones").css("width","calc(100% - 255px)");
-      $("#contenidoSecciones").css("left","255px");
-      $(".gestionSecciones .icono").css("display","block");
-      $(".gestionSecciones .icono").css("opacity","1");
-      $("#chincheta").css("color","#4b77c9");
-      this.isActive = !this.isActive
-    }else{
-      $(".gestionSecciones").css("clip-path","inset(0px 225px 0px 0px)");
-      $("#contenidoSecciones").css("width","calc(100% - 35px)");
-      $("#contenidoSecciones").css("left","35px");
-      $("#chincheta").css("color","white");
-      this.isActive = !this.isActive
     }
   }
   cerrarSesion(tipo: string, mensaje: string) {
@@ -100,7 +102,7 @@ export class GestionSeccionesComponent {
       //   }
       // );
       let url = "https://localhost:4200"+this.router.url;
-      this.stripeService.checkoutSession(2500,url).subscribe(
+      this.stripeService.checkoutSession(300,url).subscribe(
         (Response: any) => {
           if(Response != "") {
             if(Response.sessionId != null && Response.sessionId != undefined) {

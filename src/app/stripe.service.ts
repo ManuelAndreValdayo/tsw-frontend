@@ -9,13 +9,17 @@ export class StripeService {
 
   constructor(private http: HttpClient) { }
   checkoutSession(amount: any, url: string) {
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
     let info = {
       name: 'Premium Plan',
       amount: amount,
       quantity: 1,
       url: url
     }
-    return this.http.post<CheckoutSessionResponse>(`${this.apiUrl}/create-checkout-session`, info);
+    return this.http.post<CheckoutSessionResponse>(`${this.apiUrl}/create-checkout-session`, info ,{headers});
   }
 //   paymentIntent(amount: any) {
 //     const token = localStorage.getItem('access_token') ? localStorage.getItem('access_token') : "";

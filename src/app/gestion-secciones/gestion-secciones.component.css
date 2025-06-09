@@ -151,6 +151,7 @@
 }
 #cerrarSesion{
     cursor: pointer;
+    margin: 16px 0px;
 }
 .premium{
 
