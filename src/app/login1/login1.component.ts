@@ -40,7 +40,7 @@ export class Login1Component {
       //     // toggleLoading(false); // Mostrar "Cargando"
       //   }
       // });
-      // this.userService.checkCookie().subscribe({
+      // this.userService.checkLogin().subscribe({
       //   next: (response) => {
       //     if(response != ''){
       //       this.router.navigate(['/Gestion']);

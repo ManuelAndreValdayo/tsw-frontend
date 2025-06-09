@@ -1,0 +1,35 @@
+.accesoListaCompartida{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
+    left: 45%;
+    top: 40%;
+}
+.botonAdvertencia{
+    display: flex; 
+    justify-content: space-around;
+  }
+
+.contenidoBotonAdvertencia{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    margin: 10px;
+    background-color: black;
+    border-radius: 5px;
+    border: solid 1px black;
+    transition: 0.3s;
+    color: white;
+}
+.contenidoBotonAdvertencia:hover{
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+.botonesAcceso{
+    display: flex;
+    margin-top: 20px;
+}

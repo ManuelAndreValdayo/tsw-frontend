@@ -4,12 +4,12 @@ import { Login1Component } from './login1/login1.component';
 import { GestionSeccionesComponent } from './gestion-secciones/gestion-secciones.component';
 import { GestorListasComponent } from './gestor-listas/gestor-listas.component';
 import { GestorProductosComponent } from './gestor-productos/gestor-productos.component';
-import {GestorListaCompartidaComponent} from './gestor-lista-compartida/gestor-lista-compartida.component';
 import { AuthResolver } from './resolvers/auth.resolver';
 import { NgModule } from '@angular/core';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { ValidacionCuentaComponent } from './validacion-cuenta/validacion-cuenta.component';
 import { RestablecerPasswordComponent } from './restablecer-password/restablecer-password.component';
+import { EntrarListaCompartidaComponent } from './entrar-lista-compartida/entrar-lista-compartida.component';
 
 export const routes: Routes = [
     { path: 'ValidacionCuenta', component: ValidacionCuentaComponent },
@@ -32,7 +32,8 @@ export const routes: Routes = [
             }
         ]
     },
-    { path: 'listaCompartida/:id', component: GestorListaCompartidaComponent}
+    { path: 'listaCompartida/:id', component: EntrarListaCompartidaComponent, resolve: { auth: AuthResolver } },
+
 ];
 
 @NgModule({

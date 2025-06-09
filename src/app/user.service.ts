@@ -117,12 +117,12 @@ export class UserService {
     // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
     return this.http.put<any>(`${this.apiUrl2}/modificarProducto`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
-  checkCookie(){
+  checkLogin(){
     const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
-    return this.http.get<any>(`${this.apiUrl}/checkCookie`, { headers, responseType: 'text' as 'json', withCredentials : true})
+    return this.http.get<any>(`${this.apiUrl}/checkLogin`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
 
   obtenerListasUsuario(){
@@ -142,9 +142,11 @@ export class UserService {
         'Authorization' : `Bearer ${token}`
     }
     let info = {
-      lista_id: idLista,
+      lista:  {
+              "id": idLista
+            }
     }
-    return this.http.post<any>(`${this.apiUrl2}/crearInvitacion`, info,{ headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return this.http.post<any>(`${this.apiUrl2}/crearInvitacion`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
   eliminarLista(id: number){
     return this.http.delete<void>(`${this.apiUrl2}/eliminarLista/${id}`, {withCredentials : true})

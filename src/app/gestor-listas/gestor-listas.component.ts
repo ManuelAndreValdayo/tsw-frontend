@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
 import { UserService } from '../user.service';
 import {INSERTAR, MODIFICAR, ELIMINAR} from '../shared/constantes';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {MtoUrlComponent} from '../mto-url/mto-url.component';
 import * as CryptoJS from 'crypto-js';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.component';
+import Swal from 'sweetalert2';
 interface Lista {
   id: number;
   nombre: string;
@@ -37,7 +38,7 @@ export class GestorListasComponent {
   sharedModal:boolean = false;
   secretKey = 'miClaveSecreta123';
 
-  constructor(private userService: UserService, private dialog: MatDialog) {}
+  constructor(private userService: UserService, private dialog: MatDialog, private router: Router) {}
 
   // Abrir el modal con un tipo y mensaje específico
   abrirModal(tipo: string, mensaje: string, id: number) {
@@ -131,11 +132,35 @@ export class GestorListasComponent {
     // this.openSharedModal();
     this.userService.crearListaCompartida(idLista).subscribe({
       next: (response: any) => {
-        if(response == true){
-          window.location.reload();
-        }
+        console.log(response.status)
+          if(response.status == 201){
+            this.url = `${window.location.origin}/listaCompartida/${response.body}`;
+            this.openSharedModal();
+          }
+
       },
       error: (error) => {
+                switch (error.status) {
+          case 404:
+            Swal.fire({
+              title: 'Error',
+              text: 'No se encontró la lista.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            break;
+          case 500:
+            Swal.fire({
+              title: 'Error',
+              text: 'Error interno del servidor al crear la lista compartida.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+            break;
+          case 403:
+            this.router.navigate(['/Login']);
+            break;
+        }
         console.error('Error al obtener los datos:', error);
       },
     });
