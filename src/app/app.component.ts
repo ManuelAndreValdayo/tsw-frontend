@@ -11,40 +11,13 @@ import * as CryptoJS from 'crypto-js';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Register1Component, Login1Component],
+  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'sslfe';
   token = "";   
-
-  constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router) {
-  }
-
-  ngOnInit(){
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.userService.checkCookie().subscribe({
-          next: (response) => {
-            if(event.urlAfterRedirects.startsWith('/listaCompartida')){
-              AppConstants.URL = event.urlAfterRedirects;              
-            }
-            if((event.urlAfterRedirects != '/Register') && response == ''){
-              this.router.navigate(['/Login']);
-            }else if(event.urlAfterRedirects == '/' && response != ''){
-              this.router.navigate(['/Gestion/listas']);
-            }
-          },
-          error: (error) => {
-            console.error('Error al obtener el string:', error);
-          },
-        });
-      }
-    });
-
-
-  }
 }
 
 

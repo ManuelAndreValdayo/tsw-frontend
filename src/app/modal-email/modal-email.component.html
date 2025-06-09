@@ -1,0 +1,19 @@
+<div class="modal-email">
+    <form class='custom-form' [formGroup]= "sendForm">      
+      <div class="formularioLogin">
+        <div>
+          <p>RECUPERAR CONTRASEÑA</p>
+        </div>
+    
+        <div class="formularioEmailCampos">
+          <input  type="email" formControlName="email" placeholder="Introduce tu email" name="email"/>
+          <!-- Botón de Login -->
+          <div style="display: flex; justify-content: space-around;">
+            <div class="botonSendEmail" (click)="onSubmit()">
+              <p>ENVIAR</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
+</div>

@@ -115,9 +115,7 @@ export class MtoProductosComponent {
               }).then((result) => {
                 if (result.isConfirmed) {
                   if(this.listaCompartida){
-                    this.ws.onmessage = function(){
 
-                    }
                   }else{
                     window.location.reload();
                   }

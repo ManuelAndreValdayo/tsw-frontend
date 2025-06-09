@@ -120,12 +120,21 @@
 }
 
 .contenidoNavegador{
-    margin: 14px;
+    /* margin: 14px; */
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+.contenidoNavegador > p{
+    cursor: pointer;
 }
 .contenidoNavegador a{
     margin-right: 20px;
     color: white !important;
     text-decoration: none !important;
+}
+.contenidoNavegador i{
+    padding-left: 1rem;
 }
 /* .gestionSecciones{
     width: 10px;
@@ -142,4 +151,10 @@
 }
 #cerrarSesion{
     cursor: pointer;
+}
+.premium{
+
+}
+.premium > p{
+    color: white;
 }

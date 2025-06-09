@@ -23,7 +23,7 @@ interface Producto {
   templateUrl: './gestor-lista-compartida.component.html',
   styleUrl: './gestor-lista-compartida.component.css'
 })
-export class GestorListaCompartidaComponent implements OnInit{
+export class GestorListaCompartidaComponent{
 
   productos: Producto[] = []
   idLista: number = 0;
@@ -47,29 +47,7 @@ export class GestorListaCompartidaComponent implements OnInit{
     const decrypted = bytes.toString(CryptoJS.enc.Utf8);
     return parseInt(decrypted, 10); // Convertir el string desencriptado a número
   }
-  ngOnInit() {
-    this.userService.checkCookie().subscribe({
-      next: (response) => {
-        if(response != ''){
-          this.isAuthenticated = true;
-          this.route.paramMap.subscribe(params => {
-            this.hash = params.get('id');  // Convertimos a número
-            if (this.hash) {
-              this.idLista = this.decryptNumber(this.hash);
-              if(this.idLista > 0){
-                this.fncCargarProductos();
-              }
 
-            }
-        });
-        }
-      },
-      error: (error) => {
-        console.error('Error al obtener el string:', error);
-      },
-    });
-
-  }
   insertarProducto() {
     this.openModal();
     this.intAccion = INSERTAR;

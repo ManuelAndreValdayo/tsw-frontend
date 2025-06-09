@@ -6,7 +6,7 @@
         </div>
         <div style="display: flex;">
             <div class="botonAnadir">
-                <div class="contenidoBotonAnadir" (click)="insertarLista()">
+                <div class="contenidoBotonAnadir" (click)="openInsertarLista()">
                     <i style="margin-right: 15px;" class="fa-solid fa-plus"></i>
                     <p>AÑADIR LISTA</p>
                 </div>
@@ -39,7 +39,7 @@
     </div>
     <div class="divlista" *ngFor="let lista of listas">
         <div class="listaAcciones">
-            <i class="fa-solid fa-pen" title="Modificar lista" (click)="modificarLista(lista.id)"></i>
+            <i class="fa-solid fa-pen" title="Modificar lista" (click)="openModificarLista(lista.id)"></i>
             <i class="fa-solid fa-trash" title="Eliminar Lista" (click)="eliminarLista('confirmación', '¿Estás seguro de eliminar esta lista?', lista.id)"></i>
             <i routerLink="../productos" [queryParams]="{id: lista.id}" class="fa-solid fa-cart-shopping" title="Ver Productos"></i>
             <i class="fa-solid fa-share-from-square" title="Compartir lista" (click)="compartirLista(lista.id)"></i>
@@ -55,6 +55,6 @@
         <p>NO SE HAN ENCOTRADO LISTAS</p>
     </div>
 </div>
-<app-mto-listas *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idLista]="idLista"></app-mto-listas>
+<app-modal-add-listas *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idLista]="idLista"></app-modal-add-listas>
 <app-modal-advertencia [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="eliminarListaConfirmada()" (onCancelar)="cerrarModal()"></app-modal-advertencia>
 <app-mto-url *ngIf="sharedModal" [url]="url" (sharedModalClose)="sharedModal = false" ></app-mto-url>

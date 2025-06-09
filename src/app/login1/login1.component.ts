@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
 import { UserService } from '../user.service';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { AppConstants } from '../constantes';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalEmailComponent } from '../modal-email/modal-email.component';
 
-import { error } from 'console';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { toggleLoading } from '../shared/loading-util'; // Importar la función utilitaria
-import { response } from 'express';
+import {Router } from '@angular/router';
 
 @Component({
   selector: 'app-login1',
@@ -21,7 +20,7 @@ export class Login1Component {
   loginForm: FormGroup;
   submitted = false;
 
-  constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router) {    
+  constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router, private dialog: MatDialog) {    
     this.loginForm = this.formBuilder.group(
       {
         email: ['' , [Validators.required] ],
@@ -66,11 +65,11 @@ export class Login1Component {
       }
       else{
         //ENVIAR DATOS SERVIDOR EXTERNO para comprobar credenciales
-        this.userService.iniciarSesion1(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value
+        this.userService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value
         ).subscribe({
           next: (response) =>{
             this.submitted = true;
-            console.log(AppConstants.URL);
+            localStorage.setItem('access_token', response);
             if(AppConstants.URL.startsWith('/listaCompartida')){
               this.router.navigate([AppConstants.URL]);
             }else{
@@ -78,12 +77,22 @@ export class Login1Component {
             }
           },
           error: (error) =>{
+            console.log(error.status);
+            if(error.status == 403){
               Swal.fire({
+                title: 'Error',
+                text: 'La cuenta no ha sido confirmada. Por favor, revisa tu correo electrónico.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+          }else{
+            Swal.fire({
               title: 'Error',
-              text: 'Hubo un error al loguearse. Por favor, inténtalo de nuevo.',
+              text: 'Error al inciar sesión. Por favor, revisa tus credenciales.',
               icon: 'error',
               confirmButtonText: 'OK'
             });
+          }
           }
         }
           // ok => {
@@ -111,13 +120,11 @@ export class Login1Component {
         );  
       }
     }
-}
-
-
-
-
-
-function ngOnInit() {
-  throw new Error('Function not implemented.');
+    openRecoveryPassword() {
+    this.dialog.open(ModalEmailComponent, {
+      width: 'auto',
+      data: { /* puedes pasar datos si quieres */ }
+    });
+  }
 }
 

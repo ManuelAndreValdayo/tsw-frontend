@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MtoListasComponent } from './mto-listas.component';
+import { ModalEmailComponent } from './modal-email.component';
 
-describe('MtoListasComponent', () => {
-  let component: MtoListasComponent;
-  let fixture: ComponentFixture<MtoListasComponent>;
+describe('ModalEmailComponent', () => {
+  let component: ModalEmailComponent;
+  let fixture: ComponentFixture<ModalEmailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MtoListasComponent]
+      imports: [ModalEmailComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MtoListasComponent);
+    fixture = TestBed.createComponent(ModalEmailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

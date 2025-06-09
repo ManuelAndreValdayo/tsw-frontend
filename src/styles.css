@@ -75,3 +75,27 @@ input{
 .campoFormAncho_100{
     width: 100% !important;
 }
+.botonGenerico{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    margin: 10px;
+    background-color: black;
+    border-radius: 5px;
+    border: solid 1px black;
+    transition: 0.3s;
+    color: white;
+}
+.botonGenerico:hover{
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+.formWarning{
+    display: block !important;
+    margin: 0px 0 10px 17px;
+    font-size: 11px;
+    color: red;
+}

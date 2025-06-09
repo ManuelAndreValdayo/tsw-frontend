@@ -1,0 +1,26 @@
+.modal-email{
+    margin: 1rem;
+}
+.formularioEmailCampos > input{
+    width: 25rem;
+}
+
+.botonSendEmail{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+    margin: 10px;
+    background-color: black;
+    border-radius: 5px;
+    border: solid 1px black;
+    transition: 0.3s;
+    color: white;
+}
+
+.botonSendEmail:hover{
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}

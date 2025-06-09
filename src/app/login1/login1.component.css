@@ -57,8 +57,14 @@
     display: none;
 }
 
-#registrar a{
-    margin: 20px;
+.noCredenciales{
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.noCredenciales a{
+    margin: 5px 20px;
     font-size: 11px;
     color: blue;
 }

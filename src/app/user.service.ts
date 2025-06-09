@@ -22,7 +22,7 @@ export class UserService {
     }
     return this.http.post<any>(`${this.apiUrl}/registrarUser`, info);
   }
-  iniciarSesion1(email : string, pwd : string) {
+  login(email : string, pwd : string) {
     let info = {
       Email : email,
       Pwd : pwd
@@ -30,15 +30,49 @@ export class UserService {
     var response = this.http.put<any>(`${this.apiUrl}/login`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
     return response;
   }
+  restablecerPassword(pwd1 : string, pwd2 : string, token : any) {
+    let info = {
+      pwd1 : pwd1,
+      pwd2 : pwd2,
+      Token : token
+    }
+    var response = this.http.post<any>(`${this.apiUrl}/restablecerPassword`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return response;
+  }
+  validarCuenta(token : string) {
+    let info = {
+      Token : token
+    }
+    var response = this.http.post<any>(`${this.apiUrl}/validarCuenta`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return response;
+  }
+  validarCuentaRecuperarPassword(token : string) {
+    let info = {
+      Token : token
+    }
+    var response = this.http.post<any>(`${this.apiUrl}/validarCuentaRecuperarPassword`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return response;
+  }
+  sendEmail(email : string) {
+    let info = {
+      Email : email
+    }
+    var response = this.http.post<any>(`${this.apiUrl}/sendRecoveryPassword`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return response;
+  }
   cerrarSesion() {
     return this.http.post<any>(`${this.apiUrl}/cerrarSesion`, {}, {withCredentials : true}).pipe();
   }
   anadirLista(nombre : string) {
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
     let info = {
       Nombre : nombre
     }
     // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
-    return this.http.post<any>(`${this.apiUrl2}/crearLista`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return this.http.post<any>(`${this.apiUrl2}/crearLista`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   modificarLista(id: number,nombre : string) {
     let info = {
@@ -84,14 +118,33 @@ export class UserService {
     return this.http.put<any>(`${this.apiUrl2}/modificarProducto`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   checkCookie(){
-    return this.http.get<any>(`${this.apiUrl}/checkCookie`, { responseType: 'text' as 'json', withCredentials : true})
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    return this.http.get<any>(`${this.apiUrl}/checkCookie`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
 
   obtenerListasUsuario(){
-    return this.http.get<any>(`${this.apiUrl2}/getAllUserListas`, { responseType: 'text' as 'json', withCredentials : true})
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    return this.http.get<any>(`${this.apiUrl2}/getAllUserListas`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
   obtenerProductos(idLista: number){
     return this.http.get<any>(`${this.apiUrl2}/getAllProductos/${idLista}`, { responseType: 'text' as 'json', withCredentials : true})
+  }
+
+  crearListaCompartida(idLista: number){
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    let info = {
+      lista_id: idLista,
+    }
+    return this.http.post<any>(`${this.apiUrl2}/crearInvitacion`, info,{ headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   eliminarLista(id: number){
     return this.http.delete<void>(`${this.apiUrl2}/eliminarLista/${id}`, {withCredentials : true})

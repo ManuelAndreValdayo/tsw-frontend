@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MtoListasComponent } from '../mto-listas/mto-listas.component';
 import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
 import { UserService } from '../user.service';
 import {INSERTAR, MODIFICAR, ELIMINAR} from '../shared/constantes';
 import { RouterLink } from '@angular/router';
 import {MtoUrlComponent} from '../mto-url/mto-url.component';
 import * as CryptoJS from 'crypto-js';
-
+import { MatDialog } from '@angular/material/dialog';
+import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.component';
 interface Lista {
   id: number;
   nombre: string;
@@ -19,7 +19,7 @@ interface Lista {
 @Component({
   selector: 'app-gestor-listas',
   standalone: true,
-  imports: [CommonModule, MtoListasComponent, ModalAdvertenciaComponent, RouterLink, MtoUrlComponent],
+  imports: [CommonModule, ModalAddListasComponent, ModalAdvertenciaComponent, RouterLink, MtoUrlComponent],
   templateUrl: './gestor-listas.component.html',
   styleUrls: ['./gestor-listas.component.css'],
 })
@@ -37,7 +37,7 @@ export class GestorListasComponent {
   sharedModal:boolean = false;
   secretKey = 'miClaveSecreta123';
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private dialog: MatDialog) {}
 
   // Abrir el modal con un tipo y mensaje específico
   abrirModal(tipo: string, mensaje: string, id: number) {
@@ -59,12 +59,21 @@ export class GestorListasComponent {
   }
   modificarLista(id: number){
     this.openModal();
-    this.intAccion = MODIFICAR;
-    this.idLista = id;
+
   }
-  insertarLista(){
-    this.openModal();
-    this.intAccion = INSERTAR;
+  openInsertarLista() {
+    this.dialog.open(ModalAddListasComponent, {
+      width: 'auto',
+      data: { /* puedes pasar datos si quieres */ }
+    });
+  }
+    openModificarLista(id: number) {
+      this.intAccion = MODIFICAR;
+      this.idLista = id;
+      this.dialog.open(ModalAddListasComponent, {
+        width: 'auto',
+        data: { /* puedes pasar datos si quieres */ }
+      });
   }
   eliminarLista(tipo: string, mensaje: string, id: number){
     this.tipoAdvertencia = tipo;
@@ -116,10 +125,20 @@ export class GestorListasComponent {
 
   // Función para encriptar
   compartirLista(idLista: number){
-    const numberAsString = idLista.toString(); // Convertir el número a string
-    const encrypted = CryptoJS.AES.encrypt(numberAsString, this.secretKey).toString();
-    this.url = `${window.location.origin}/listaCompartida/${encodeURIComponent(encrypted)}`;
-    this.openSharedModal();
+    // const numberAsString = idLista.toString(); // Convertir el número a string
+    // const encrypted = CryptoJS.AES.encrypt(numberAsString, this.secretKey).toString();
+    // this.url = `${window.location.origin}/listaCompartida/${encodeURIComponent(encrypted)}`;
+    // this.openSharedModal();
+    this.userService.crearListaCompartida(idLista).subscribe({
+      next: (response: any) => {
+        if(response == true){
+          window.location.reload();
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos:', error);
+      },
+    });
   }
   openSharedModal(){
     this.sharedModal = true;
