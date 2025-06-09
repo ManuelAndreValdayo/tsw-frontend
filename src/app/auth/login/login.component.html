@@ -1,0 +1,47 @@
+<form class='custom-form' [formGroup]= "loginForm">      
+  <div class="formularioLogin">
+    <div>
+      <p style="margin-left: 10px;">LOGIN 1</p>
+    </div>
+
+    <div class="formularioLoginCampos">
+      <input  type="email" formControlName="email" placeholder="Introduce tu email" name="email"/>
+        <div class="invalid-feedback" *ngIf= "this.loginForm.controls['email'].errors" >
+        </div>
+        <input type="password" placeholder="Introduce tu contrase&ntilde;a" formControlName="pwd"/>        
+      <!-- Botón de Login -->
+      <div style="display: flex; justify-content: space-around;">
+        <div class="botonLogin" (click)="onSubmit()">
+          <p>LOGIN</p>
+        </div>
+      </div>
+      <div class="noCredenciales"> 
+        <a routerLink="/Register">¿No tienes cuenta?</a> 
+        <a (click)="openRecoveryDialog(forgotPwdTpl)">¿Has olvidado la contraseña?</a>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Plantilla del diálogo -->
+<ng-template #forgotPwdTpl>
+  <h2 mat-dialog-title>Recuperar contraseña</h2>
+  <mat-dialog-content [formGroup]="forgotForm">
+    <p>Introduce tu correo:</p>
+    <mat-form-field appearance="fill" style="width:100%">
+      <input matInput formControlName="email" placeholder="Email" />
+      <mat-error *ngIf="forgotForm.get('email')?.invalid && forgotForm.get('email')?.touched">
+        Email inválido
+      </mat-error>
+    </mat-form-field>
+    <p *ngIf="msgRecovery" [class.error]="errorRecovery">{{ msgRecovery }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="dialogRef.close()">Cancelar</button>
+    <button mat-raised-button color="primary"
+            [disabled]="forgotForm.invalid"
+            (click)="submitRecovery()">
+      Enviar
+    </button>
+  </mat-dialog-actions>
+</ng-template>
