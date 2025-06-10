@@ -6,8 +6,8 @@ import { webSocket } from 'rxjs/webSocket';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'https://localhost:9090/users';
-  private apiUrl2 = 'https://localhost:9000/listaCompra';
+  private apiUrl = 'http://localhost:9090/users';
+  private apiUrl2 = 'http://localhost:9000/listaCompra';
 
   constructor(private http: HttpClient) {}
 
@@ -75,12 +75,16 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl2}/crearLista`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   modificarLista(id: number,nombre : string) {
+        const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
     let info = {
       id: id,
       Nombre : nombre
     }
     // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
-    return this.http.put<any>(`${this.apiUrl2}/modificarLista`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return this.http.put<any>(`${this.apiUrl2}/modificarLista`, info, {headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   obtenerLista(id: number){
     return this.http.get<any>(`${this.apiUrl2}/getLista/${id}`, { responseType: 'text' as 'json', withCredentials : true})
@@ -109,13 +113,17 @@ export class UserService {
     // return this.http.post<any>(`${this.apiUrl2}/anadirProducto`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   modificarProducto(id: number,nombre : string, cantidad : number) {
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
     let info = {
       id: id,
       nombre : nombre,
       cantidad : cantidad
     }
     // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
-    return this.http.put<any>(`${this.apiUrl2}/modificarProducto`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
+    return this.http.put<any>(`${this.apiUrl2}/modificarProducto`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   checkLogin(){
     const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
@@ -129,7 +137,7 @@ export class UserService {
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
-    return this.http.get<any>(`${this.apiUrl}/checkPremium`, { headers, responseType: 'text' as 'json', withCredentials : true})
+    return this.http.get<any>(`${this.apiUrl2}/verify-premium`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
 
   obtenerListasUsuario(){
@@ -167,10 +175,18 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl2}/agregarUserListaCompartida`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
   eliminarLista(id: number){
-    return this.http.delete<void>(`${this.apiUrl2}/eliminarLista/${id}`, {withCredentials : true})
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    return this.http.delete<void>(`${this.apiUrl2}/eliminarLista/${id}`, {headers, withCredentials : true})
   }
   eliminarProducto(id: number){
-    return this.http.delete<void>(`${this.apiUrl2}/eliminarProducto/${id}`, {withCredentials : true})
+        const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    return this.http.delete<void>(`${this.apiUrl2}/eliminarProducto/${id}`, {headers, withCredentials : true})
   }
 
 }

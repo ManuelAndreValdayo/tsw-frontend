@@ -29,7 +29,7 @@ export class GestionSeccionesComponent implements OnInit {
   isAuthenticated = false;
   stripe: Stripe | null = null; // Inicializa stripe como null
   sessionId: string = ''; // Aquí se guardará el session_id recibido desde el backend
-  isPremium: boolean = true; // Variable para verificar si el usuario es premium
+  isPremium: boolean = false; // Variable para verificar si el usuario es premium
   constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router, private stripeService: StripeService) {   
   
   }
@@ -37,11 +37,15 @@ export class GestionSeccionesComponent implements OnInit {
     this.userService.checkPremium().subscribe({
       next: (response) => {
         console.log('Respuesta de checkLogin:', response);
-        if(response== false) {
+        console.log(response);
+        if(response== 'false') {
           this.isPremium = false;
+        }else{
+          this.isPremium = true;
         }
       },
       error: (error) => {
+        console.error(error);
         console.error('Error al verificar el login:', error);
       },
     });
@@ -82,13 +86,15 @@ export class GestionSeccionesComponent implements OnInit {
     this.mostrarModal = false;
   }
   fncCerrarSesion(){
-    this.userService.cerrarSesion().subscribe(
-      ok => {
-        // this.router.navigate(['/Login']);
-      },
-      error => {
-       }
-  );
+    localStorage.removeItem('access_token');
+    this.router.navigate(['/Login']);
+  //   this.userService.cerrarSesion().subscribe(
+  //     ok => {
+  //       // this.router.navigate(['/Login']);
+  //     },
+  //     error => {
+  //      }
+  // );
 }
   async abrirStripe() {
     loadStripe('pk_test_51RH5xFPnW5m9y1BSz8N1YywBFfir3xI9JdHJd2VdFUCLrrkjulPTeB0R0xFM5YJ06l3Y4tZ5SQzEE1zdR0io5B6O00gX9a2qCl')  // Usa tu clave pública de Stripe

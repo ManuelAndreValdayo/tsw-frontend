@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class StripeService {
-  private apiUrl = "https://localhost:9090/api/stripe";
+  private apiUrl = "http://localhost:9090/api/stripe";
 
   constructor(private http: HttpClient) { }
   checkoutSession(amount: any, url: string) {

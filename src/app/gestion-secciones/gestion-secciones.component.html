@@ -4,7 +4,7 @@
         <!-- <a href="Gestion">Inicio</a>
         <a href="Login">Login</a>
         <a href="Register">Registro</a> -->
-        <p *ngIf="isPremium != true" (click)="abrirStripe()">Pasate a premium</p>
+        <p *ngIf="isPremium == true" (click)="abrirStripe()">Pasate a premium</p>
         <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion('confirmación', '¿Estás seguro de que quieres cerrar sesión?')"></i>
         <!-- <div class="premium">
         </div> -->
