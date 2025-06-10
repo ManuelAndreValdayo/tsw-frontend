@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { webSocket } from 'rxjs/webSocket';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +9,11 @@ export class UserService {
   private apiUrl2 = 'http://localhost:9000/listaCompra';
 
   constructor(private http: HttpClient) {}
+
+    /** Devuelve el JWT almacenado o cadena vacía si no existe */
+  getToken(): string {
+    return localStorage.getItem('access_token') ?? '';
+  }
 
   register1(email : string, pwd1 : string, pwd2 : string, nombre : string, apellidos : string, telefono : string) {
     let info = {
@@ -23,6 +27,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/registrarUser`, info);
   }
   login(email : string, pwd : string) {
+    console.log("Login con email: " + email + " y pwd: " + pwd);
     let info = {
       Email : email,
       Pwd : pwd
@@ -64,7 +69,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl}/cerrarSesion`, {}, {withCredentials : true}).pipe();
   }
   anadirLista(nombre : string) {
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
@@ -75,7 +80,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl2}/crearLista`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   modificarLista(id: number,nombre : string) {
-        const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
@@ -113,7 +118,7 @@ export class UserService {
     // return this.http.post<any>(`${this.apiUrl2}/anadirProducto`, info, { responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   modificarProducto(id: number,nombre : string, cantidad : number) {
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
@@ -126,14 +131,14 @@ export class UserService {
     return this.http.put<any>(`${this.apiUrl2}/modificarProducto`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
   checkLogin(){
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
     return this.http.get<any>(`${this.apiUrl}/checkLogin`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
   checkPremium(){
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
@@ -141,7 +146,7 @@ export class UserService {
   }
 
   obtenerListasUsuario(){
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
@@ -152,7 +157,7 @@ export class UserService {
   }
 
   crearListaCompartida(idLista: number){
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
@@ -164,7 +169,7 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl2}/crearInvitacion`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
   agregarUserListaCompartida(){
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const tokenListaCompartida = (sessionStorage.getItem('tokenListaCompartida')) ? sessionStorage.getItem('tokenListaCompartida') : "";
     const headers = {
         'Authorization' : `Bearer ${token}`
@@ -175,14 +180,14 @@ export class UserService {
     return this.http.post<any>(`${this.apiUrl2}/agregarUserListaCompartida`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
   eliminarLista(id: number){
-    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
     return this.http.delete<void>(`${this.apiUrl2}/eliminarLista/${id}`, {headers, withCredentials : true})
   }
   eliminarProducto(id: number){
-        const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const token = this.getToken();
     const headers = {
         'Authorization' : `Bearer ${token}`
     }

@@ -1,71 +1,108 @@
+<!-- gestor-productos.component.html -->
 <div class="buscador">
-    <div class="nombreBuscador">
-        <div style="display: flex; padding-left: 20px;">
-            <i style="margin-right: 5px;" class="fa-duotone fa-solid fa-magnifying-glass"></i>
-            <p><b>BUSCADOR PRODUCTOS</b></p>
-        </div>
-        <div style="display: flex;">
-            <div class="botonAnadir">
-                <div class="contenidoBotonAnadir" (click)="insertarProducto()">
-                    <i style="margin-right: 15px;" class="fa-solid fa-plus"></i>
-                    <p>AÑADIR PRODUCTO</p>
-                </div>
-            </div>
-        </div>
+  <!-- Header y botón de AÑADIR usando sockets -->
+  <div class="nombreBuscador flex-space-between align-center">
+    <div class="flex align-center">
+      <i class="fa-solid fa-magnifying-glass icon-search" aria-hidden="true"></i>
+      <p><strong>BUSCADOR PRODUCTOS</strong></p>
     </div>
-    <div class="contenidoBuscador">
-        <div>
-            <div class="contenedorFlex">
-                <input type="text" placeholder="nombre producto">
-                <div class="botonBuscar">
-                    <div class="contenidoBotonBuscar">
-                      <p>BUSCAR</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <button
+      class="contenidoBotonAnadir"
+      type="button"
+      (click)="openModalAndPrepare(INSERTAR)">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
+      <span>AÑADIR PRODUCTO</span>
+    </button>
+  </div>
 
-</div>
-<div class="volver" routerLink="../listas" (click)="fncCerrarWs()">
-    <i class="fa-solid fa-arrow-left"></i>
-    <p style="font-size: 15px; margin-left: 10px;"><b>VOLVER</b></p>
-</div>
-<div id="contenedorProductos">
-    <div style="display: flex; flex-direction: row;">
-        <div class="acciones"></div>
-        <div style="width: 100%; display: flex;">
-            <div class="atributo campoFormAncho_70">
-                <p><b>NOMBRE</b></p>
-            </div>
-            <div class="atributo campoFormAncho_30">
-                <p><b>CANTIDAD</b></p>
-            </div>
-        </div>
-        <div class="info campoFormAncho_10"></div>
+  <!-- Filtro client-side -->
+  <div class="contenidoBuscador">
+    <div class="contenedorFlex align-center">
+      <input
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+        type="text"
+        placeholder="Nombre producto"
+        aria-label="Buscar producto"
+      />
+      <button
+        class="contenidoBotonBuscar"
+        type="button"
+        (click)="onSearch()">
+        BUSCAR
+      </button>
     </div>
-    <div class="divproducto" *ngFor="let producto of productos">
-        <div class="productoAcciones">
-            <i class="fa-solid fa-pen" title="Modificar producto" (click)="modificarProducto(producto.id)"></i>
-            <i class="fa-solid fa-trash" title="Eliminar producto" (click)="eliminarProducto('confirmación', '¿Estás seguro de eliminar esta producto?', producto.id)"></i>
-        </div>
-        <div style="width: 100%; display: flex;">
-            <div class="productoAtributo campoFormAncho_70">
-                <p>{{ producto.nombre || 'Sin nombre' }}</p>
-            </div>
-            <div class="productoAtributo campoFormAncho_30">
-                <p>{{ producto.cantidad || 'Sin nombre' }}</p>
-            </div>
-        </div>
-        <div class="productoInfo campoFormAncho_10"></div>
-    </div>
-    <div *ngIf="productos.length == 0" class="sinProductos">
-        <p>NO SE HAN ENCOTRADO PRODUCTOS</p>
-    </div>
+  </div>
 </div>
-<div class="volver" routerLink="../listas" (click)="fncCerrarWs()">
-    <i class="fa-solid fa-arrow-left" ></i>
-    <p style="font-size: 15px; margin-left: 10px;"><b>VOLVER</b></p>
+
+<!-- Volver a listas y desconectar WS -->
+<div
+  class="volver flex align-center"
+  routerLink="../listas"
+  (click)="disconnectWs()"
+  aria-label="Volver a listas">
+  <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+  <span><strong>VOLVER</strong></span>
 </div>
-<app-mto-productos *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idProducto]="idProducto" [idLista]="idLista"></app-mto-productos>
-<app-modal-advertencia [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="eliminarProductoConfirmada()" (onCancelar)="cerrarModal()"></app-modal-advertencia>
+
+<section id="contenedorProductos">
+  <!-- Encabezado de tabla -->
+  <div class="headerProducto flex align-center">
+    <div class="acciones"></div>
+    <div class="atributo campoFormAncho_70"><strong>NOMBRE</strong></div>
+    <div class="atributo campoFormAncho_30"><strong>CANTIDAD</strong></div>
+    <div class="info campoFormAncho_10"></div>
+  </div>
+
+  <!-- Cada producto usa confirmDelete y openModalAndPrepare -->
+  <div
+    class="divproducto flex align-center"
+    *ngFor="let producto of filteredProductos()">
+    <div class="productoAcciones">
+      <button
+        class="icon-button"
+        type="button"
+        [attr.aria-label]="'Modificar ' + producto.nombre"
+        (click)="openModalAndPrepare(MODIFICAR, producto)">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+      <button
+        class="icon-button"
+        type="button"
+        [attr.aria-label]="'Eliminar ' + producto.nombre"
+        (click)="confirmDelete(producto.id)">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+    <div class="productoAtributo campoFormAncho_70">
+      {{ producto.nombre || 'Sin nombre' }}
+    </div>
+    <div class="productoAtributo campoFormAncho_30">
+      {{ producto.cantidad || 'Sin cantidad' }}
+    </div>
+    <div class="productoInfo campoFormAncho_10"></div>
+  </div>
+
+  <!-- Mensaje cuando no hay nada que mostrar -->
+  <div *ngIf="productos.length === 0" class="sinProductos">
+    NO SE HAN ENCONTRADO PRODUCTOS
+  </div>
+</section>
+
+<!-- Modales: alta/edición y advertencia -->
+<app-mto-productos
+  *ngIf="isModalOpen"
+  (modalClose)="closeModal()"
+  (modalSave)="onModalSave($event)"
+  [tipoAccion]="intAccion"
+  [idProducto]="idProducto ?? 0"
+  [idLista]="idLista">
+</app-mto-productos>
+
+<app-modal-advertencia
+  [tipoAdvertencia]="tipoAdvertencia"
+  [mensaje]="mensajeModal"
+  [mostrar]="mostrarModal"
+  (onConfirmar)="eliminarProductoConfirmada()"
+  (onCancelar)="cerrarModal()">
+</app-modal-advertencia>
