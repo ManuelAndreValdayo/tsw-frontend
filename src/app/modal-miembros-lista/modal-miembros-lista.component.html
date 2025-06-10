@@ -1,0 +1,21 @@
+
+
+<div>
+    <div *ngIf="!isLoading && nombresMiembros.length > 0">
+      <h2>Miembros de la Lista:</h2>
+      <div *ngFor="let usuario, of nombresMiembros" class="contentMiembro" style="border: 1px solid #ccc; margin-bottom: 10px; padding: 10px;">
+          <div class="contenidoNombreMiembro">
+              <p>{{ usuario.nombre }}</p>
+              &nbsp;
+              <p>{{ usuario.apellidos }}</p>
+            </div>
+            <i _ngcontent-ng-c3188105926="" title="Eliminar Miembro de la lista" class="fa-solid fa-trash" (click)="openEliminarMiembro(usuario.lista_id_compartida)"></i>
+        </div>
+    </div>
+    
+    <div *ngIf="!isLoading && nombresMiembros.length === 0" style="text-align: center; padding: 20px;">
+      <p>No hay miembros en esta lista.</p>
+    </div>
+    
+    <button *ngIf="!isLoading" (click)="cerrarModal()">Cerrar</button>
+</div>

@@ -74,6 +74,24 @@ export class UserService {
     // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
     return this.http.post<any>(`${this.apiUrl2}/crearLista`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
+  eliminarMiembroLista(id: number) {
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    let info = {
+      id: id
+    } 
+    return this.http.post<any>(`${this.apiUrl}/eliminarMiembroLista`,info, {headers, responseType: 'text' as 'json', withCredentials : true})
+  }
+  obtenerUsuario(id : string) {
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
+    return this.http.get<any>(`${this.apiUrl}/obtenerUsuario/${id}`, { headers, responseType: 'text' as 'json', withCredentials : true});
+  }
   modificarLista(id: number,nombre : string) {
         const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
     const headers = {
@@ -139,13 +157,20 @@ export class UserService {
     }
     return this.http.get<any>(`${this.apiUrl2}/verify-premium`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
-
+// LISTAS Y PRODUCTOS COMPARTIDOS
   obtenerListasUsuario(){
     const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
     const headers = {
         'Authorization' : `Bearer ${token}`
     }
     return this.http.get<any>(`${this.apiUrl2}/getAllUserListas`, { headers, responseType: 'text' as 'json', withCredentials : true})
+  }
+  obtenerMiembrosLista(idLista: number){
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    return this.http.get<any>(`${this.apiUrl2}/obtenerMiembrosLista/${idLista}`, { headers, responseType: 'text' as 'json', withCredentials : true})
   }
   obtenerProductos(idLista: number){
     return this.http.get<any>(`${this.apiUrl2}/getAllProductos/${idLista}`, { responseType: 'text' as 'json', withCredentials : true})

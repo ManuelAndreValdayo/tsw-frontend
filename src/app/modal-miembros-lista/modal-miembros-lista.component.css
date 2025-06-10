@@ -1,0 +1,18 @@
+.contentMiembro{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 20px;
+    background: #dbdbdb;
+    border-radius: 5px;
+    margin: 20px 10px 0px 10px;
+    width: 25rem;
+}
+.contenidoNombreMiembro{
+    display: flex;
+}
+.fa-solid:hover{
+    color: red;
+    cursor: pointer;
+
+}

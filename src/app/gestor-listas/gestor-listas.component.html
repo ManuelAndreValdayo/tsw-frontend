@@ -49,7 +49,9 @@
             <p>{{ lista.nombre || 'Sin nombre' }}</p>
             </div>
         </div>
-        <div class="listaInfo"></div>
+        <div class="listaAcciones">
+            <i class="fa-solid fa-user-group" title="Ver miembros" (click)="openVerMiembros(lista.id)"></i>
+        </div>
     </div>
     <div *ngIf="listas.length == 0" class="sinListas">
         <p>NO SE HAN ENCOTRADO LISTAS</p>

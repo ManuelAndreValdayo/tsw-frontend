@@ -8,6 +8,7 @@ import {MtoUrlComponent} from '../mto-url/mto-url.component';
 import * as CryptoJS from 'crypto-js';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.component';
+import { ModalMiembrosListaComponent } from '../modal-miembros-lista/modal-miembros-lista.component';
 import Swal from 'sweetalert2';
 interface Lista {
   id: number;
@@ -66,6 +67,12 @@ export class GestorListasComponent {
     this.dialog.open(ModalAddListasComponent, {
       width: 'auto',
       data: { /* puedes pasar datos si quieres */ }
+    });
+  }
+    openVerMiembros(id: number) {
+    this.dialog.open(ModalMiembrosListaComponent, {
+      width: 'auto',
+      data: { idLista: id } // Pasamos el id de la lista al modal
     });
   }
     openModificarLista(id: number) {
