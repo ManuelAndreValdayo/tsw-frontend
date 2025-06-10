@@ -1,17 +1,24 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { provideClientHydration } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
-import { AuthModule } from './auth/auth.module';
+import { AuthInterceptor } from './auth/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes), 
     provideClientHydration(), 
-    provideHttpClient(withFetch(), withInterceptorsFromDi())]
+    provideAnimations(),
+    provideHttpClient(withFetch(), withInterceptorsFromDi()),
+      // 2) Registra tu interceptor para todas las peticiones
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+  ]
 };
-importProvidersFrom(ReactiveFormsModule, AuthModule);

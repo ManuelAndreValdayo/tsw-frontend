@@ -6,47 +6,55 @@
     height: 100vh;
     background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-  }
-  
-  .modal-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+ 
+.modal-container {
+    /* Estos fueron eliminados, lo cual es correcto para flexbox centering */
+    /* position: relative; */
+    /* top: 50%; */
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
     width: 90%;
     max-width: 600px;
     background: white;
-    border-radius: 10px;
+    border-radius: 10px; /* Aquí está el border-radius */
     padding: 20px;
     z-index: 1001;
-  }
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15); /* Aquí está la sombra */
+    /* Añadidos para posibles desbordamientos de contenido */
+    overflow: auto;
+    max-height: 90vh;
+}
   
-  .modal-header {
+.modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
+}
   
-  .close-button {
+.close-button {
     background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-  }
+}
   
-  .modal-body form {
+.modal-body form {
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
+}
   
-  .modal-body form button {
+.modal-body form button {
     margin-top: 10px;
-  }
+}
 
-  .contenedorUrl > input{
+.contenedorUrl > input {
     width: 85%;
-  }
-  .contenedorUrl > i{
+}
+.contenedorUrl > i {
     cursor: pointer;
-  }
+}

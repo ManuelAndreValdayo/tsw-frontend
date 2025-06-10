@@ -22,8 +22,8 @@
 .formularioLoginCampos > input{
     height: 30px;
     border-radius: 5px;
-    margin: 10px;
     border: none;
+    margin: 10px;
     padding-left: 10px;
 }
 
@@ -63,8 +63,58 @@
     flex-direction: column;
     align-items: flex-end;
 }
-.noCredenciales a{
-    margin: 5px 20px;
-    font-size: 11px;
-    color: blue;
+
+.noCredenciales a {
+  margin: 5px 20px;
+  font-size: 11px;
+  text-decoration: underline; /* subrayado */
+  cursor: pointer;            /* mano al pasar */
+  color: #0056b3;             /* azul típico de enlaces */
+}
+
+.noCredenciales a:hover {
+  color: #003f7f;             /* tono más oscuro al hover */
+}
+/* Asegura que el contenedor del formulario tenga algo de padding extra */
+.custom-form .formularioLoginCampos {
+  padding-bottom: 1rem;  /* espacio bajo los campos antes del botón */
+}
+
+/* El texto dentro en negrita y rojo */
+.invalid-feedback span {
+  color: #c82333;       /* rojo oscuro */
+  font-weight: bold;    /* negrita */
+  font-size: 0.75rem;  /* ligeramente más pequeño que el label */
+  line-height: 1.2;
+}
+
+/* Espacio extra bajo cada input inválido */
+input.is-invalid {
+  border: 1px solid #d32f2f !important;  /* rojo vivo, 1px de ancho */
+  background-color: #ffeef0;  /* rosa muy suave, opcional */
+  box-shadow: none !important;           /* quita cualquier halo */
+}
+
+/* Mantener el mismo borde al enfocar */
+input.is-invalid:focus {
+  border: 1px solid #d32f2f !important;
+  outline: none;                         /* quita el outline por defecto */
+  background-color: #ffeef0;  /* rosa muy suave, opcional */
+}
+
+/* Si quieres un fondo suave para destacar el mensaje */
+.invalid-feedback {
+  background: rgba(211, 47, 47, 0.05); /* rojo muy suave de fondo */
+  margin: 0 10px 10px;
+  padding-left: 10px; /* alinearlo ligeramente con el input */
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+
+input.is-invalid + .invalid-feedback {
+  opacity: 1;
+  transform: translateY(0);
 }

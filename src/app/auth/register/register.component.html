@@ -1,84 +1,103 @@
-<form [formGroup]="registerForm">
-    <div class="formularioRegistrar">
-      <div>
-        <p style="margin-left: 10px;">REGISTER 1</p>
+<form class="custom-form" [formGroup]="registerForm" (ngSubmit)="validarFormulario()">
+  <div class="formularioRegistrar">
+    <h2>
+      <p style="margin-left: 10px;">REGISTER</p>
+    </h2>
+
+    <div class="formularioRegistrarCampos">
+      <!-- EMAIL -->
+      <input id="email-input"
+        type="email"
+        formControlName="email"
+        placeholder="*EMAIL"
+        [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+      />
+      <div id="email-error" class="invalid-feedback" *ngIf="registerForm.get('email')?.touched">
+        <span *ngIf="registerForm.get('email')?.hasError('required')">
+          * El email es obligatorio.
+        </span>
+        <span *ngIf="registerForm.get('email')?.hasError('email')">
+          * Formato de email inválido.
+        </span>
       </div>
-  
-      <div class="formularioRegistrarCampos">
-        
-        <!-- EMAIL -->
-        <input 
-          placeholder="  *EMAIL" 
-          type="text" 
-          name="emailRegistro" 
-          id="emailRegistro" 
-          formControlName="email"
-          [ngClass]="{'input-error': registerForm.controls['email'].invalid && registerForm.controls['email'].touched}"
-        />
-        <!-- Mensajes de error para el email -->
-        <div *ngIf="registerForm.controls['email'].errors?.['required'] && registerForm.controls['email'].touched" class="formWarning">
-          *Debes de introducir el email
+
+      <!-- NOMBRE -->
+      <input id="nombre-input"
+        type="text"
+        formControlName="nombre"
+        placeholder="*NOMBRE"
+        [class.is-invalid]="registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched"
+      />
+      <div id="nombre-error" class="invalid-feedback" *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.hasError('required')">
+        <span>* El nombre es obligatorio.</span>
+      </div>
+
+      <!-- APELLIDOS -->
+      <input id="apellidos-input"
+        type="text"
+        formControlName="apellidos"
+        placeholder="*APELLIDOS"
+        [class.is-invalid]="registerForm.get('apellidos')?.invalid && registerForm.get('apellidos')?.touched"
+      />
+      <div id="apellidos-error" class="invalid-feedback" *ngIf="registerForm.get('apellidos')?.touched && registerForm.get('apellidos')?.hasError('required')">
+        <span>* Los apellidos son obligatorios.</span>
+      </div>
+
+      <!-- PASSWORD -->
+      <input id="pwd1-input"
+        type="password"
+        formControlName="pwd1"
+        placeholder="*PASSWORD"
+        [class.is-invalid]="registerForm.get('pwd1')?.invalid && registerForm.get('pwd1')?.touched"
+      />
+      <div id="pwd1-error" class="invalid-feedback" *ngIf="registerForm.get('pwd1')?.touched">
+        <span *ngIf="registerForm.get('pwd1')?.hasError('required')">
+          * La contraseña es obligatoria.
+        </span>
+        <span *ngIf="registerForm.get('pwd1')?.hasError('minlength')">
+          * Mínimo 6 caracteres.
+        </span>
+      </div>
+
+      <!-- PASSWORD CONFIRM -->
+      <input id="pwd2-input"
+        type="password"
+        formControlName="pwd2"
+        placeholder="*CONFIRMAR PASSWORD"
+        [class.is-invalid]="(registerForm.get('pwd2')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('pwd2')?.touched"
+      />
+      <div id="pwd2-error" class="invalid-feedback" *ngIf="registerForm.get('pwd2')?.touched">
+        <span *ngIf="registerForm.get('pwd2')?.hasError('required')">
+          * Debes confirmar la contraseña.
+        </span>
+        <span *ngIf="registerForm.hasError('passwordMismatch')">
+          * Las contraseñas no coinciden.
+        </span>
+      </div>
+
+      <!-- Botón de Registro -->
+      <div id="registerButton" style="display: flex; justify-content: space-around;">
+        <div
+          class="botonRegistrar"
+          [class.disabled]="registerForm.invalid"
+          (click)="validarFormulario()"
+        >
+          <p>REGISTRAR</p>
         </div>
-        <div *ngIf="registerForm.controls['email'].errors?.['email'] && registerForm.controls['email'].touched" class="formWarning">
-          *El formato del email es incorrecto
-        </div>
-        
-        <!-- NOMBRE -->
-        <input placeholder="  NOMBRE" type="text" name="nombreRegistro" id="nombreRegistro" formControlName="nombre">
-  
-        <!-- APELLIDOS -->
-        <input placeholder="  APELLIDOS" type="text" name="apellidosRegistro" id="apellidosRegistro" formControlName="apellidos">
-  
-        <!-- TELEFONO -->
-        <input placeholder="  TELEFONO" type="number" name="telefonoRegistro" id="telefonoRegistro" formControlName="telefono">
-  
-        <!-- PASSWORD -->
-        <input 
-          placeholder="  *PASSWORD" 
-          type="password" 
-          name="password1" 
-          id="password1" 
-          formControlName="pwd1"
-          [ngClass]="{'input-error': registerForm.controls['pwd1'].invalid && registerForm.controls['pwd1'].touched}"
-        />
-        <!-- Mensajes de error para el password -->
-        <div *ngIf="registerForm.controls['pwd1'].errors?.['required'] && registerForm.controls['pwd1'].touched" class="formWarning">
-          *Debes de introducir la contraseña
-        </div>
-        <div *ngIf="registerForm.controls['pwd1'].errors?.['minlength'] && registerForm.controls['pwd1'].touched" class="formWarning">
-          *La contraseña debe tener al menos 6 caracteres
-        </div>
-        <div *ngIf="registerForm.controls['pwd1'].errors?.['passwordStrength'] && registerForm.controls['pwd1'].touched" class="formWarning">
-          *La contraseña no cumple con los requisitos
-        </div>
-  
-        <!-- PASSWORD CONFIRMATION -->
-        <input 
-          placeholder="  *PASSWORD CONFIRMATION" 
-          type="password" 
-          name="password2" 
-          id="password2" 
-          formControlName="pwd2"
-          [ngClass]="{'input-error': registerForm.controls['pwd2'].invalid && registerForm.controls['pwd2'].touched}"
-        />
-        <!-- Mensaje de error para la confirmación de contraseña -->
-        <div *ngIf="registerForm.controls['pwd2'].errors?.['required'] && registerForm.controls['pwd2'].touched" class="formWarning">
-          *Debes de confirmar la contraseña
-        </div>
-        <div *ngIf="registerForm.hasError('passwordMismatch') && registerForm.controls['pwd2'].touched" class="formWarning">
-          *Las contraseñas no coinciden
-        </div>
-  
-        <!-- Botón de Registrar -->
-        <div style="display: flex; justify-content: space-around;">
-          <div class="botonRegistrar" (click)="validarFormulario()">
-            <p>REGISTRAR</p>
-          </div>
-        </div>
-        <div id="login" style="display: flex;justify-content: flex-end;">
-          <a href="/Login">¿Ya tienes una cuenta?</a>
-        </div>
+      </div>
+
+      <!-- Enlace a login -->
+      <div id="credenciales" class="noCredenciales">
+        <a id ="loginLink" routerLink="/login">¿Ya tienes una cuenta?</a>
       </div>
     </div>
-  </form>
-  
+  </div>
+</form>
+
+<app-modal-advertencia
+  [mostrar]="showModal"
+  [tipoAdvertencia]="modalType"
+  [mensaje]="modalMessage"
+  (onCancelar)="onCancel()"
+  (onConfirmar)="onCancel()"
+></app-modal-advertencia>

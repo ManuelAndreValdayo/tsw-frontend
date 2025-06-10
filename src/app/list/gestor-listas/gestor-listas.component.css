@@ -1,0 +1,105 @@
+/* gestor-listas.component.css */
+
+/* 1. Buscador */
+.list-search {
+  background: #909090;
+  border-radius: 5px;
+  margin: 1rem;
+  padding: 1rem;
+}
+.list-search__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.list-search__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+}
+.list-search__add {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.list-search__add:hover {
+  background: #fff;
+  color: #000;
+}
+.list-search__form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.list-search__form input {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  background: #dadada;
+}
+.list-search__form .btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0 15px;
+  height: auto;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.list-search__form .btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* 2. Tabla de listas */
+.list-table {
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.list-table__header,
+.list-table__row {
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+  align-items: center;
+}
+.list-table__header {
+  font-weight: bold;
+}
+.col {
+  padding: 0.5rem;
+}
+.col--actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.col--actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.col--name {
+  padding-left: 1rem;
+}
+.col--info {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.list-table__row {
+  background: #dbdbdb;
+  border-radius: 5px;
+}
+.list-table__empty {
+  text-align: center;
+  padding: 2rem;
+  background: #dbdbdb;
+  border-radius: 5px;
+}

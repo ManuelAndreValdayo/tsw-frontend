@@ -1,0 +1,68 @@
+<div class="list-search">
+  <div class="list-search__header">
+    <div class="list-search__title">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>BUSCADOR LISTAS</span>
+    </div>
+    <button (click)="openCreateModal()" class="btn list-search__add">
+      <i class="fa-solid fa-plus"></i> AÑADIR LISTA
+    </button>
+  </div>
+
+  <form class="list-search__form" (ngSubmit)="onSearch()">
+    <input
+      type="text"
+      placeholder="Nombre de la lista"
+      [(ngModel)]="searchQuery"
+      name="query"
+    />
+    <button type="submit" class="btn">BUSCAR</button>
+  </form>
+</div>
+
+<section class="list-table">
+  <div class="list-table__header">
+    <span class="col col--actions"></span>
+    <span class="col col--name">NOMBRE</span>
+    <span class="col col--info"></span>
+  </div>
+
+  <div *ngFor="let lista of listas" class="list-table__row">
+    <div class="col col--actions">
+      <button title="Modificar lista" (click)="openEditModal(lista)">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+      <button title="Eliminar lista" (click)="confirmDelete(lista.id, lista.nombre)">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+
+    <div class="col col--name">
+      {{ lista.nombre || 'Sin nombre' }}
+    </div>
+
+    <div class="col col--info">
+      <button
+        title="Ver productos"
+        [routerLink]="['/productos']"
+        [queryParams]="{ id: lista.id }"
+      >
+        <i class="fa-solid fa-cart-shopping"></i>
+      </button>
+      <button title="Compartir lista" (click)="compartirLista(lista.id)">
+        <i class="fa-solid fa-share-from-square"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="listas.length === 0" class="list-table__empty">
+    NO SE HAN ENCONTRADO LISTAS
+  </div>
+</section>
+
+<!-- Modal compartir URL -->
+<app-mto-url
+  *ngIf="sharedModal"
+  [url]="url"
+  (sharedModalClose)="sharedModal = false"
+></app-mto-url>

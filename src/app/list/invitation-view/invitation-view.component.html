@@ -1,0 +1,11 @@
+<div *ngIf="!invitationData && !error">Cargando invitación…</div>
+<div *ngIf="error">{{ error }}</div>
+
+<div *ngIf="invitationData">
+  <h2>Has sido invitado a la lista “{{ invitationData?.nombre }}”</h2>
+  <p>Propietario: {{ invitationData?.propietarioNombre }}</p>
+  <p>Miembros: {{ invitationData?.numMiembros }}</p>
+  <p>Productos: {{ invitationData?.numProductos }}</p>
+  <button (click)="onAccept()" [disabled]="loading">Aceptar invitación</button>
+  <button (click)="onCancel()" [disabled]="loading">Cancelar</button>
+</div>

@@ -1,22 +1,71 @@
-.navegador{
-    display: flex;
-    background-color: black;
-    height: 50px;
-    color: white;
-    justify-content: flex-end;
+/* 1. La app ocupa toda la ventana y distribuye header + contenido */
+.app-root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
 }
 
-.contenidoNavegador{
-    margin: 14px;
-}
-.contenidoNavegador a{
-    margin-right: 20px;
-    color: white !important;
-    text-decoration: none !important;
-}
-.gestionSecciones{
-    width: 10px;
-    height: 100%;
-    background-color: black;
+/* 2. Header fijo arriba */
+.app-header {
+  background: #000;              /* negro */
+  color: #fff;
+  height: 60px;                  /* alto fijo */
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 100;                  /* siempre encima */
 }
 
+/* 2a. Contenido interno del header */
+.app-header__inner {
+  margin-left: auto;             /* empuja a la derecha */
+  display: flex;
+  gap: 1rem;
+}
+
+/* 2b. Botones estilo Material/own */
+.btn-premium,
+.btn-logout {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: background 150ms;
+}
+.btn-premium:hover,
+.btn-logout:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* 3. Main: ocupa el 100% - header */
+.app-content {
+  flex: 1;                       /* ocupa todo el espacio restante */
+  overflow-y: auto;              /* scroll interno */
+  background: #f5f5f5;           /* gris claro */
+  padding: 1rem;
+}
+
+/* 4. Ajusta tu GestorListas en su propio CSS si necesita márgenes */
+/* Ejemplo: un buscador y un botón alineado a la derecha */
+.busqueda-listas {
+  display: flex;
+  align-items: center;
+  background: #ccc;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.btn-añadir-lista {
+  margin-left: auto;
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}

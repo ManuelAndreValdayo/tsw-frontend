@@ -1,23 +1,57 @@
-<form class='custom-form' [formGroup]= "loginForm">      
+<form class="custom-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <div class="formularioLogin">
-    <div>
-      <p style="margin-left: 10px;">LOGIN 1</p>
-    </div>
+    <h2>
+      <p style="margin-left: 10px;">LOGIN</p>
+    </h2>
 
     <div class="formularioLoginCampos">
-      <input  type="email" formControlName="email" placeholder="Introduce tu email" name="email"/>
-        <div class="invalid-feedback" *ngIf= "this.loginForm.controls['email'].errors" >
-        </div>
-        <input type="password" placeholder="Introduce tu contrase&ntilde;a" formControlName="pwd"/>        
+      <!-- Email -->
+      <input id="email-input"
+        type="email"
+        formControlName="email"
+        placeholder="Introduce tu email"
+        name="email"
+        [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+      />
+      <div id="email-error" class="invalid-feedback" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        <span *ngIf="loginForm.get('email')?.hasError('required')">
+          * El email es obligatorio.
+        </span>
+        <span *ngIf="loginForm.get('email')?.hasError('email')">
+          * Formato de email inválido.
+        </span>
+      </div>
+
+      <!-- Contraseña -->
+      <input id="pwd-input"
+        type="password"
+        formControlName="pwd"
+        placeholder="Introduce tu contraseña"
+        [class.is-invalid]="loginForm.get('pwd')?.invalid && loginForm.get('pwd')?.touched"
+      />
+      <div id="pwd-error"
+        class="invalid-feedback"
+        *ngIf="loginForm.get('pwd')?.touched && loginForm.get('pwd')?.hasError('required')"
+      >
+        <span>
+        * La contraseña es obligatoria.
+        </span>
+      </div>
+
       <!-- Botón de Login -->
-      <div style="display: flex; justify-content: space-around;">
-        <div class="botonLogin" (click)="onSubmit()">
+      <div id="login-button" style="display: flex; justify-content: space-around;">
+        <div
+          class="botonLogin"
+          [class.disabled]="loginForm.invalid"
+          (click)="onSubmit()"
+        >
           <p>LOGIN</p>
         </div>
       </div>
-      <div class="noCredenciales"> 
-        <a routerLink="/Register">¿No tienes cuenta?</a> 
-        <a (click)="openRecoveryDialog(forgotPwdTpl)">¿Has olvidado la contraseña?</a>
+
+      <div class="noCredenciales" id="noCredenciales">
+        <a id="registerLink" routerLink="/register">¿No tienes cuenta?</a>
+        <a id="restorePwdLink" (click)="openRecoveryDialog(forgotPwdTpl)">¿Has olvidado la contraseña?</a>
       </div>
     </div>
   </div>

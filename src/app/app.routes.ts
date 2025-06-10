@@ -4,42 +4,31 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
-import { EntrarListaCompartidaComponent } from './entrar-lista-compartida/entrar-lista-compartida.component';
-import { GestionSeccionesComponent } from './gestion-secciones/gestion-secciones.component';
-import { GestorListasComponent } from './gestor-listas/gestor-listas.component';
 import { GestorProductosComponent } from './gestor-productos/gestor-productos.component';
+import { GestorListasComponent } from './list/gestor-listas/gestor-listas.component';
+import { InvitationViewComponent } from './list/invitation-view/invitation-view.component';
 import { RestablecerPasswordComponent } from './restablecer-password/restablecer-password.component';
-import { ValidacionCuentaComponent } from './validacion-cuenta/validacion-cuenta.component';
 
 export const routes: Routes = [
-    { path: 'ValidacionCuenta', component: ValidacionCuentaComponent },
-    { path: 'RestablecerPassword', component: RestablecerPasswordComponent },
-    { path: 'Login', component: LoginComponent },
-    { path: '', redirectTo: 'Login', pathMatch: 'full' },
-    { path: 'Register', component: RegisterComponent },
+    { path: 'restablecerPassword', component: RestablecerPasswordComponent },
+    { path: 'login', component: LoginComponent },
+    { path: 'register', component: RegisterComponent },
     {
-      path: 'Gestion',
-      component: GestionSeccionesComponent,
-      canActivate: [AuthGuard],
-      children: [
-        {
-          path: 'listas',
-          component: GestorListasComponent,
-          canActivate: [AuthGuard]
-        },
-        {
-          path: 'productos',
-          component: GestorProductosComponent,
-          canActivate: [AuthGuard]
-        }
-      ]
-    },
-    { 
-      path: 'listaCompartida/:id', 
-      component: EntrarListaCompartidaComponent,
+      path: 'listas',
+      component: GestorListasComponent,
       canActivate: [AuthGuard]
     },
-
+    {
+      path: 'productos',
+      component: GestorProductosComponent,
+      canActivate: [AuthGuard]
+    },
+    { 
+      path: 'invitaciones/:invToken', 
+      component: InvitationViewComponent,
+      canActivate: [AuthGuard]
+    },
+    { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];
 
 @NgModule({

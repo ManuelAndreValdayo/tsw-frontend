@@ -1,31 +1,25 @@
-  <!-- <app-register1></app-register1> -->
-   <!-- <app-login1></app-login1> -->
-    <!-- <nav class="navegador">
-      <div class="contenidoNavegador">
-        <a href="Gestion">Inicio</a>
-        <a href="Login">Login</a>
-        <a href="Register">Registro</a>
-      </div>
+<div class="app-root">
+  <!-- Header sólo cuando estás logueado -->
+  <header *ngIf="isLoggedIn" class="app-header">
+    <div class="app-header__inner">
+      <button class="btn-premium" (click)="promptUpgrade()">Pásate a premium</button>
+      <button class="btn-logout" (click)="promptLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
 
-
-      <br>
-    </nav>
-    <div id="loadingSpinner" style="display: none; align-items: center; justify-content: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999;">
-      <div class="spinner"></div>
-    </div> -->
-    <style>
-      .spinner {
-        border: 8px solid #f3f3f3; /* Light grey */
-        border-top: 8px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 2s linear infinite;
-      }
-    
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    </style>
+  <!-- Aquí va todo tu contenido de rutas -->
+  <main class="app-content">
     <router-outlet></router-outlet>
+  </main>
+
+  <!-- Modal global -->
+  <app-modal-advertencia
+    [mostrar]="globalModalShow"
+    [tipoAdvertencia]="globalModalType"
+    [mensaje]="globalModalMessage"
+    (onCancelar)="closeGlobalModal()"
+    (onConfirmar)="globalConfirmHandler()">
+  </app-modal-advertencia>
+</div>

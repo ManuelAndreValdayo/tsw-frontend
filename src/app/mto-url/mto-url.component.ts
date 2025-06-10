@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { FormsModule} from '@angular/forms'; // <-- Importa FormsModule
+import { Clipboard } from '@angular/cdk/clipboard';
 import { CommonModule } from '@angular/common'; // Usar CommonModule en lugar de BrowserModule
-import { UserService } from '../user.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
-import * as CryptoJS from 'crypto-js';
+import { Component, Inject, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // <-- Importa FormsModule
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-mto-url',
@@ -14,25 +13,36 @@ import * as CryptoJS from 'crypto-js';
   styleUrl: './mto-url.component.css'
 })
 export class MtoUrlComponent {
-  @Output() sharedModalClose = new EventEmitter<void>();
   @Input() url: string = '';
-  secretKey = 'miClaveSecreta123';
 
-  constructor(private router: Router) {}
-
-  closeModal() {
-    this.sharedModalClose.emit(); // Notifica al componente padre que se cerró la ventana modal
+  constructor(
+    private clipboard: Clipboard,
+    private snackBar: MatSnackBar,
+    public dialogRef: MatDialogRef<MtoUrlComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { url: string } // <--- ¡LA CLAVE ESTÁ AQUÍ!
+  ) {
+    this.url = data.url; // Asigna la URL recibida a la propiedad 'url' del componente
   }
-  copiarAlPortapapeles(){
+
+  copiarAlPortapapeles() {
     const inputElement = document.getElementById('txtUrl') as HTMLInputElement;
     if (inputElement) {
-      navigator.clipboard.writeText(inputElement.value)
-        .then(() => {
-          alert('Texto copiado al portapapeles: ' + inputElement.value);
-        })
-        .catch(err => {
-          console.error('Error al copiar al portapapeles: ', err);
-        });
+      this.url = inputElement.value; // Actualizar la URL desde el input
+      this.clipboard.copy(this.url); // Copiar la URL al portapapeles
+      this.mostrarMensaje('URL copiada al portapapeles');
     }
+  }
+
+  private mostrarMensaje(mensaje: string) {
+    this.snackBar.open(mensaje, 'Cerrar', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top'
+    });
+  }
+
+  closeModal() {
+    // Esto debería manejarse desde el componente padre
+    this.dialogRef.close();
   }
 }
