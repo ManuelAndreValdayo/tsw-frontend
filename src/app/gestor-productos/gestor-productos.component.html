@@ -1,108 +1,105 @@
-<!-- gestor-productos.component.html -->
-<div class="buscador">
-  <!-- Header y botón de AÑADIR usando sockets -->
-  <div class="nombreBuscador flex-space-between align-center">
-    <div class="flex align-center">
-      <i class="fa-solid fa-magnifying-glass icon-search" aria-hidden="true"></i>
-      <p><strong>BUSCADOR PRODUCTOS</strong></p>
+<div class="toolbar">
+  <!-- Izquierda: icono + título + buscador -->
+  <div class="toolbar-left">
+    <div class="title">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>BUSCADOR PRODUCTOS</span>
     </div>
-    <button
-      class="contenidoBotonAnadir"
-      type="button"
-      (click)="openModalAndPrepare(INSERTAR)">
-      <i class="fa-solid fa-plus" aria-hidden="true"></i>
-      <span>AÑADIR PRODUCTO</span>
-    </button>
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Nombre producto..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Buscar producto" />
+      <!-- <button (click)="onSearch()">BUSCAR</button> -->
+    </div>
   </div>
 
-  <!-- Filtro client-side -->
-  <div class="contenidoBuscador">
-    <div class="contenedorFlex align-center">
-      <input
-        [(ngModel)]="searchTerm"
-        (keyup.enter)="onSearch()"
-        type="text"
-        placeholder="Nombre producto"
-        aria-label="Buscar producto"
-      />
-      <button
-        class="contenidoBotonBuscar"
-        type="button"
-        (click)="onSearch()">
-        BUSCAR
-      </button>
-    </div>
-  </div>
+  <!-- Derecha: botón de añadir -->
+  <button class="btn-add" (click)="openModalAndPrepare(INSERTAR)">
+    <i class="fa-solid fa-plus"></i>
+    <span>AÑADIR PRODUCTO</span>
+  </button>
 </div>
 
-<!-- Volver a listas y desconectar WS -->
-<div
-  class="volver flex align-center"
-  routerLink="../listas"
-  (click)="disconnectWs()"
-  aria-label="Volver a listas">
+<div class="volver flex align-center" routerLink="../listas" (click)="disconnectWs()" aria-label="Volver a listas">
   <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
   <span><strong>VOLVER</strong></span>
 </div>
 
-<section id="contenedorProductos">
-  <!-- Encabezado de tabla -->
-  <div class="headerProducto flex align-center">
-    <div class="acciones"></div>
-    <div class="atributo campoFormAncho_70"><strong>NOMBRE</strong></div>
-    <div class="atributo campoFormAncho_30"><strong>CANTIDAD</strong></div>
-    <div class="info campoFormAncho_10"></div>
-  </div>
+<div class="productos-container">
+  <table class="productos-table">
+    <caption class="sr-only">Lista de productos</caption>
+    <thead>
+      <tr>
+        <th scope="col">Acciones</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Total</th>
+        <th scope="col">Comprado</th>
+        <th scope="col">Añadir compra</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of filteredProductos()"
+          [class.comprado]="producto.cantidad_comprada >= producto.cantidad">
+        <td class="acciones-cell">
+          <ng-container *ngIf="producto.id_creador === currentUserId; else placeholderActions">
+            <button class="icon-button" (click)="openModalAndPrepare(MODIFICAR, producto)">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="icon-button" (click)="confirmDelete(producto.id)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </ng-container>
+          <ng-template #placeholderActions>
+            <!-- dos spans vacíos que mantienen el tamaño -->
+            <span class="action-placeholder"></span>
+            <span class="action-placeholder"></span>
+          </ng-template>
+        </td>
+        <td>{{ producto.nombre || 'Sin nombre' }}</td>
+        <td>{{ producto.cantidad }}</td>
+        <td>{{ producto.cantidad_comprada }}</td>
+        <td class="add-purchase-cell">
+          <input type="number" min="0" placeholder="0"
+                [(ngModel)]="purchaseAmount[producto.id]"
+                class="inputCompra"
+                onkeypress="return false;"
+                onpaste="return false;"
+                ondrop="return false;" />
+          <button class="btnCompra" type="button" (click)="addPurchased(producto)">+</button>
+        </td>
+      </tr>
+      <tr *ngIf="productos.length === 0">
+        <td colspan="5" class="sinProductos">NO HAY PRODUCTOS EN ESTA LISTA</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-  <!-- Cada producto usa confirmDelete y openModalAndPrepare -->
-  <div
-    class="divproducto flex align-center"
-    *ngFor="let producto of filteredProductos()">
-    <div class="productoAcciones">
-      <button
-        class="icon-button"
-        type="button"
-        [attr.aria-label]="'Modificar ' + producto.nombre"
-        (click)="openModalAndPrepare(MODIFICAR, producto)">
-        <i class="fa-solid fa-pen"></i>
-      </button>
-      <button
-        class="icon-button"
-        type="button"
-        [attr.aria-label]="'Eliminar ' + producto.nombre"
-        (click)="confirmDelete(producto.id)">
-        <i class="fa-solid fa-trash"></i>
-      </button>
-    </div>
-    <div class="productoAtributo campoFormAncho_70">
-      {{ producto.nombre || 'Sin nombre' }}
-    </div>
-    <div class="productoAtributo campoFormAncho_30">
-      {{ producto.cantidad || 'Sin cantidad' }}
-    </div>
-    <div class="productoInfo campoFormAncho_10"></div>
-  </div>
-
-  <!-- Mensaje cuando no hay nada que mostrar -->
-  <div *ngIf="productos.length === 0" class="sinProductos">
-    NO SE HAN ENCONTRADO PRODUCTOS
-  </div>
-</section>
-
-<!-- Modales: alta/edición y advertencia -->
-<app-mto-productos
+<div
   *ngIf="isModalOpen"
-  (modalClose)="closeModal()"
-  (modalSave)="onModalSave($event)"
-  [tipoAccion]="intAccion"
-  [idProducto]="idProducto ?? 0"
-  [idLista]="idLista">
-</app-mto-productos>
+  class="modal-backdrop"
+  (click)="closeModal()">
+</div>
+<!-- contenedor modal centrado -->
+<div *ngIf="isModalOpen" class="modal-wrapper">
+  <app-mto-productos
+    [tipoAccion]="intAccion"
+    [idProducto]="idProducto ?? 0"
+    [idLista]="idLista"
+    [producto]="selectedProducto"
+    (modalClose)="closeModal()"
+    (modalSave)="onModalSave($event)">
+  </app-mto-productos>
+</div>
 
+<!-- Modal de confirmación de eliminación -->
 <app-modal-advertencia
+  [mostrar]="mostrarModal"
   [tipoAdvertencia]="tipoAdvertencia"
   [mensaje]="mensajeModal"
-  [mostrar]="mostrarModal"
   (onConfirmar)="eliminarProductoConfirmada()"
   (onCancelar)="cerrarModal()">
 </app-modal-advertencia>

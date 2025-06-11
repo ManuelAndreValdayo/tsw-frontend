@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common'; // Usar CommonModule en lugar de BrowserModule
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Client, Frame, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { ModalAdvertenciaComponent } from '../modal-advertencia/modal-advertencia.component';
@@ -12,11 +12,13 @@ import { UserService } from '../user.service';
 interface Producto {
   id: number;
   cantidad: number;
+  cantidad_comprada: number;
   nombre: string;
   id_lista_compra: number;
+  id_creador: number;
 }
 @Component({
-  selector: 'app-gestor-productos',  
+  selector: 'app-gestor-productos',
   standalone: true,
   imports: [
     CommonModule,
@@ -32,116 +34,133 @@ export class GestorProductosComponent implements OnInit, OnDestroy {
   private stompClient!: Client;
   productos: Producto[] = [];
   idLista = 0;
-  searchTerm: string = '';
+  searchTerm = '';
 
-  // Modal de añadir/editar productos
+  // Usuario actual extraído del JWT
+  currentUserId: number;
+  // mapa de valores a comprar
+  purchaseAmount: Record<number, number> = {};
+
+  // Modal añadir/editar
   isModalOpen = false;
-  intAccion: number = 0;
+  intAccion = 0;
   idProducto: number | null = null;
+  selectedProducto!: Producto;
   readonly INSERTAR = 1;
   readonly MODIFICAR = 2;
 
-  // Modal de advertencia para eliminar
-  tipoAdvertencia: string = '';
-  mensajeModal: string = '';
-  mostrarModal: boolean = false;
+  // Modal advertencia
+  tipoAdvertencia = '';
+  mensajeModal = '';
+  mostrarModal = false;
   private idToDelete: number | null = null;
 
   constructor(
     private userService: UserService,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    // Decodifica el subject (userId) del JWT
+    const token = this.userService.getToken();
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      this.currentUserId = Number(payload.sub);
+    } catch {
+      this.currentUserId = 0;
+    }
+  }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.idLista = +params['id'];
       this.connectWebSocket();
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.disconnectWs();
   }
 
-  /** Conexión STOMP/SockJS al backend */
-private connectWebSocket() {
-  const token = this.userService.getToken();
-  this.stompClient = new Client({
-    webSocketFactory: () => new SockJS('http://localhost:9000/ws'),
-    connectHeaders: { Authorization: `Bearer ${token}` },
-    reconnectDelay: 5000,
-    debug: str => console.log('STOMP:', str),
-    onConnect: (_frame: Frame) => {
-      // 1) Snapshot inicial: broker lo enviará a /user/queue/listas/{id}
-      this.stompClient.subscribe(
-        `/user/queue/listas/${this.idLista}`,
-        (msg: Message) => {
-          const body = JSON.parse(msg.body);
-          if (Array.isArray(body)) {
-            this.productos = body;
+  private connectWebSocket(): void {
+    const token = this.userService.getToken();
+    this.stompClient = new Client({
+      webSocketFactory: () => new SockJS('http://localhost:9000/ws'),
+      connectHeaders: { Authorization: `Bearer ${token}` },
+      reconnectDelay: 5000,
+      debug: str => console.log('STOMP:', str),
+      onConnect: (_frame: Frame) => {
+        // Suscripción al snapshot inicial
+        this.stompClient.subscribe(
+          `/app/listas/${this.idLista}/productos`,
+          (msg: Message) => {
+            const raw = JSON.parse(msg.body) as any[];
+            console.log('📥 Snapshot:', raw);
+            this.productos = raw.map(r => this.mapToProducto(r));
+            console.log('➡️ Mappeados:', this.productos);
           }
-        }
-      );
+        );
+        // Suscripción a diffs: añade, edita, elimina
+        this.stompClient.subscribe(
+          `/topic/listas/${this.idLista}/productos`,
+          (msg: Message) => {
+            const raw = JSON.parse(msg.body) as any;
+            console.log('📨 Diff:', raw);
+            this.applyDiff(raw);
+          }
+        );
+        // Suscripción a errores
+        this.stompClient.subscribe(
+          '/user/queue/errors',
+          (err: Message) => alert(`Error: ${JSON.parse(err.body).message}`)
+        );
+      },
+      onStompError: frame => console.error('STOMP ERROR:', frame.headers['message'])
+    });
+    this.stompClient.activate();
+  }
 
-      // 2) Cambios posteriores: añade/edita/borra en /topic/listas/{id}
-      this.stompClient.subscribe(
-        `/topic/listas/${this.idLista}`,
-        (msg: Message) => this.onProductUpdate(msg)
-      );
+  /** Convierte objeto JSON crudo a Producto */
+  private mapToProducto(r: any): Producto {
+    return {
+      id: r.id,
+      nombre: r.nombre,
+      cantidad: r.cantidadTotal ?? r.cantidad ?? 0,
+      cantidad_comprada: r.cantidadComprada ?? 0,
+      id_lista_compra: r.id_lista_compra,
+      id_creador: r.creador
+    };
+  }
 
-      // 3) Errores: cualquier excepción va a /user/queue/errors
-      this.stompClient.subscribe(
-        '/user/queue/errors',
-        (err: Message) => {
-          const payload = JSON.parse(err.body);
-          alert(`Error: ${payload.message}`);
-        }
-      );
-    },
-    onStompError: (frame: Frame) => {
-      console.error('STOMP ERROR:', frame.headers['message']);
+  /** Aplica un diff del broker: add/edit/delete */
+  private applyDiff(raw: any): void {
+    if (raw.eliminadoId != null) {
+      this.productos = this.productos.filter(p => p.id !== raw.eliminadoId);
+      return;
     }
-  });
-
-  this.stompClient.activate();
-}
-
-
-  /** Actualiza el array de productos según el mensaje recibido */
-  private onProductUpdate(msg: Message) {
-    const body = JSON.parse(msg.body);
-    if (body.eliminadoId != null) {
-      this.productos = this.productos.filter(p => p.id !== body.eliminadoId);
+    const prod = this.mapToProducto(raw);
+    const idx = this.productos.findIndex(p => p.id === prod.id);
+    if (idx === -1) {
+      this.productos.push(prod);
     } else {
-      const idx = this.productos.findIndex(p => p.id === body.id);
-      if (idx === -1) this.productos.push(body);
-      else this.productos[idx] = body;
+      this.productos[idx] = prod;
     }
   }
-
-  /** Filtra productos en base al término de búsqueda (client-side) */
+  
   filteredProductos(): Producto[] {
-    if (!this.searchTerm) return this.productos;
-    const term = this.searchTerm.toLowerCase();
-    return this.productos.filter(p =>
-      p.nombre?.toLowerCase().includes(term)
-    );
+    return this.searchTerm
+      ? this.productos.filter(p => p.nombre?.toLowerCase().includes(this.searchTerm.toLowerCase()))
+      : this.productos;
   }
 
-  /** Método invocado al pulsar BUSCAR */
-  onSearch(): void {
-    // Con client-side filter no es necesario más código aquí
-  }
+  onSearch(): void { /* Client-side filter */ }
 
-  /** Prepara el modal de confirmación de eliminación */
   confirmDelete(id: number): void {
     this.idToDelete = id;
-    this.tipoAdvertencia = 'ELIMINAR';
-    this.mensajeModal = '¿Estás seguro que deseas eliminar este producto?';
+    this.tipoAdvertencia = 'confirmación';
+    this.mensajeModal = '¿Seguro que deseas eliminar este producto?';
     this.mostrarModal = true;
   }
 
-  /** Elimina el producto tras confirmar */
   eliminarProductoConfirmada(): void {
     if (this.idToDelete != null) {
       this.stompClient.publish({
@@ -152,30 +171,28 @@ private connectWebSocket() {
     this.cerrarModal();
   }
 
-  /** Cierra el modal de añadir/editar */
   closeModal(): void {
     this.isModalOpen = false;
     this.idProducto = null;
   }
 
-  /** Cierra el modal de advertencia */
   cerrarModal(): void {
     this.mostrarModal = false;
     this.idToDelete = null;
   }
 
-  /** Abre el modal de alta o edición según la acción */
   openModalAndPrepare(action: number, prod?: Producto): void {
     this.intAccion = action;
-    this.idProducto = action === this.MODIFICAR && prod ? prod.id : null;
-    this.isModalOpen = true;
+    if (action === this.MODIFICAR && prod) {
+      this.selectedProducto = prod;
+      this.idProducto = prod.id;
+    }
+    this.isModalOpen = action === this.MODIFICAR
+      ? true : action === this.INSERTAR;
   }
 
-  /** Ajustado para aceptar CustomEvent del modal o un Producto directo */
-  onModalSave(event: any): void {
-    const prod: Producto = (event && (event as CustomEvent).detail)
-      ? (event as CustomEvent).detail
-      : event;
+  onModalSave(prod: Producto): void {
+    console.log('Producto recibido a modificar o crear:', prod);
     if (this.intAccion === this.INSERTAR) {
       this.stompClient.publish({
         destination: `/app/listas/${this.idLista}/productos/añadir`,
@@ -190,8 +207,21 @@ private connectWebSocket() {
     this.closeModal();
   }
 
-  /** Desconecta del WebSocket */
+  /** Añade cantidad comprada a un producto (cualquier usuario) */
+  addPurchased(product: Producto): void {
+    const qty = this.purchaseAmount[product.id] || 0;
+    if (qty > 0) {
+      this.stompClient.publish({
+        destination: `/app/listas/${this.idLista}/productos/${product.id}/comprar`,
+        body: JSON.stringify({ cantidadComprada: qty })
+      });
+      // reset input
+      this.purchaseAmount[product.id] = 0;
+    }
+  }
+
   disconnectWs(): void {
     if (this.stompClient) this.stompClient.deactivate();
+    this.router.navigate(['../listas'], { relativeTo: this.route });
   }
 }

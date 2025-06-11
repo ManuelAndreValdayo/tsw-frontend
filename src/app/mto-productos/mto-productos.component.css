@@ -1,71 +1,138 @@
+/* ===================================
+   Overlay y contenedor modal
+   =================================== */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-  }
-  
-  .modal-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 600px;
-    background: white;
-    border-radius: 10px;
-    padding: 20px;
-    z-index: 1001;
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  .modal-body form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .modal-body form button {
-    margin-top: 10px;
-  }
-  
-  #botonEnviarProducto{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40%;
-    height: 30px;
-    margin: 10px;
-    background-color: black;
-    border-radius: 5px;
-    border: solid 1px black;
-    transition: 0.3s;
-    color: white;
-  }
-  .contenedorForm{
-    display: flex;
-    width: 100%;
-  }
-  .contenedorFrm{
-    display: flex;
-    flex-direction: column;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
 
-  .contenedorFrm > label{
-    margin-left: 10px;
-  }
+.modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 1001;
+}
+
+/* ===================================
+   Cabecera del modal
+   =================================== */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+/* ===================================
+   Cuerpo del modal (formularios)
+   =================================== */
+.modal-body form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Campo individual */
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+.field input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fff;
+  color: #000;
+}
+
+/* ===================================
+   Area de acciones (botones)
+   =================================== */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.actions button {
+  padding: 8px 20px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* Botón primario (Añadir / Guardar) */
+.actions button:first-child {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.actions button:first-child:hover {
+  background: #333;
+  border-color: #333;
+}
+
+/* Botón secundario (Cancelar) */
+.actions button:last-child {
+  background: #e0e0e0;
+  color: #333;
+  border-color: #ccc;
+}
+
+.actions button:last-child:hover {
+  background: #d5d5d5;
+  border-color: #bbb;
+}
+
+/* estilo visual para botón disabled */
+.actions button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  /* opcional: cambiar color de fondo/borde si quieres */
+  background-color: #999 !important;
+  border-color: #999 !important;
+  color: #eee !important;
+}
