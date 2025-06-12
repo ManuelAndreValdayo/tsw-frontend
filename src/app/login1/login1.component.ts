@@ -1,13 +1,12 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import { UserService } from '../user.service';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
-import { AppConstants } from '../constantes';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import Swal from 'sweetalert2';
 import { ModalEmailComponent } from '../modal-email/modal-email.component';
+import { UserService } from '../user.service';
 
-import {Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login1',
@@ -56,6 +55,7 @@ export class Login1Component {
     onSubmit() {
       this.submitted=true;
       if(this.loginForm.invalid){
+        console.log("Formulario inválido");
         Swal.fire({
           title: 'Error',
           text: 'Credenciales incorrectas',
@@ -64,6 +64,7 @@ export class Login1Component {
         });
       }
       else{
+        console.log("Formulario válido");
         //ENVIAR DATOS SERVIDOR EXTERNO para comprobar credenciales
         this.userService.login(this.loginForm.controls['email'].value, this.loginForm.controls['pwd'].value
         ).subscribe({

@@ -1,71 +1,105 @@
-<div class="buscador">
-    <div class="nombreBuscador">
-        <div style="display: flex; padding-left: 20px;">
-            <i style="margin-right: 5px;" class="fa-duotone fa-solid fa-magnifying-glass"></i>
-            <p><b>BUSCADOR PRODUCTOS</b></p>
-        </div>
-        <div style="display: flex;">
-            <div class="botonAnadir">
-                <div class="contenidoBotonAnadir" (click)="insertarProducto()">
-                    <i style="margin-right: 15px;" class="fa-solid fa-plus"></i>
-                    <p>AÑADIR PRODUCTO</p>
-                </div>
-            </div>
-        </div>
+<div class="toolbar">
+  <!-- Izquierda: icono + título + buscador -->
+  <div class="toolbar-left">
+    <div class="title">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>BUSCADOR PRODUCTOS</span>
     </div>
-    <div class="contenidoBuscador">
-        <div>
-            <div class="contenedorFlex">
-                <input type="text" placeholder="nombre producto">
-                <div class="botonBuscar">
-                    <div class="contenidoBotonBuscar">
-                      <p>BUSCAR</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Nombre producto..."
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearch()"
+        aria-label="Buscar producto" />
+      <!-- <button (click)="onSearch()">BUSCAR</button> -->
     </div>
+  </div>
 
+  <!-- Derecha: botón de añadir -->
+  <button class="btn-add" (click)="openModalAndPrepare(INSERTAR)">
+    <i class="fa-solid fa-plus"></i>
+    <span>AÑADIR PRODUCTO</span>
+  </button>
 </div>
-<div class="volver" routerLink="../listas" (click)="fncCerrarWs()">
-    <i class="fa-solid fa-arrow-left"></i>
-    <p style="font-size: 15px; margin-left: 10px;"><b>VOLVER</b></p>
+
+<div class="volver flex align-center" routerLink="../listas" (click)="disconnectWs()" aria-label="Volver a listas">
+  <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+  <span><strong>VOLVER</strong></span>
 </div>
-<div id="contenedorProductos">
-    <div style="display: flex; flex-direction: row;">
-        <div class="acciones"></div>
-        <div style="width: 100%; display: flex;">
-            <div class="atributo campoFormAncho_70">
-                <p><b>NOMBRE</b></p>
-            </div>
-            <div class="atributo campoFormAncho_30">
-                <p><b>CANTIDAD</b></p>
-            </div>
-        </div>
-        <div class="info campoFormAncho_10"></div>
-    </div>
-    <div class="divproducto" *ngFor="let producto of productos">
-        <div class="productoAcciones">
-            <i class="fa-solid fa-pen" title="Modificar producto" (click)="modificarProducto(producto.id)"></i>
-            <i class="fa-solid fa-trash" title="Eliminar producto" (click)="eliminarProducto('confirmación', '¿Estás seguro de eliminar esta producto?', producto.id)"></i>
-        </div>
-        <div style="width: 100%; display: flex;">
-            <div class="productoAtributo campoFormAncho_70">
-                <p>{{ producto.nombre || 'Sin nombre' }}</p>
-            </div>
-            <div class="productoAtributo campoFormAncho_30">
-                <p>{{ producto.cantidad || 'Sin nombre' }}</p>
-            </div>
-        </div>
-        <div class="productoInfo campoFormAncho_10"></div>
-    </div>
-    <div *ngIf="productos.length == 0" class="sinProductos">
-        <p>NO SE HAN ENCOTRADO PRODUCTOS</p>
-    </div>
+
+<div class="productos-container">
+  <table class="productos-table">
+    <caption class="sr-only">Lista de productos</caption>
+    <thead>
+      <tr>
+        <th scope="col">Acciones</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Total</th>
+        <th scope="col">Comprado</th>
+        <th scope="col">Añadir compra</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of filteredProductos()"
+          [class.comprado]="producto.cantidad_comprada >= producto.cantidad">
+        <td class="acciones-cell">
+          <ng-container *ngIf="producto.id_creador === currentUserId; else placeholderActions">
+            <button class="icon-button" (click)="openModalAndPrepare(MODIFICAR, producto)">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button class="icon-button" (click)="confirmDelete(producto.id)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </ng-container>
+          <ng-template #placeholderActions>
+            <!-- dos spans vacíos que mantienen el tamaño -->
+            <span class="action-placeholder"></span>
+            <span class="action-placeholder"></span>
+          </ng-template>
+        </td>
+        <td>{{ producto.nombre || 'Sin nombre' }}</td>
+        <td>{{ producto.cantidad }}</td>
+        <td>{{ producto.cantidad_comprada }}</td>
+        <td class="add-purchase-cell">
+          <input type="number" min="0" placeholder="0"
+                [(ngModel)]="purchaseAmount[producto.id]"
+                class="inputCompra"
+                onkeypress="return false;"
+                onpaste="return false;"
+                ondrop="return false;" />
+          <button class="btnCompra" type="button" (click)="addPurchased(producto)">+</button>
+        </td>
+      </tr>
+      <tr *ngIf="productos.length === 0">
+        <td colspan="5" class="sinProductos">NO HAY PRODUCTOS EN ESTA LISTA</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="volver" routerLink="../listas" (click)="fncCerrarWs()">
-    <i class="fa-solid fa-arrow-left" ></i>
-    <p style="font-size: 15px; margin-left: 10px;"><b>VOLVER</b></p>
+
+<div
+  *ngIf="isModalOpen"
+  class="modal-backdrop"
+  (click)="closeModal()">
 </div>
-<app-mto-productos *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idProducto]="idProducto" [idLista]="idLista"></app-mto-productos>
-<app-modal-advertencia [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="eliminarProductoConfirmada()" (onCancelar)="cerrarModal()"></app-modal-advertencia>
+<!-- contenedor modal centrado -->
+<div *ngIf="isModalOpen" class="modal-wrapper">
+  <app-mto-productos
+    [tipoAccion]="intAccion"
+    [idProducto]="idProducto ?? 0"
+    [idLista]="idLista"
+    [producto]="selectedProducto"
+    (modalClose)="closeModal()"
+    (modalSave)="onModalSave($event)">
+  </app-mto-productos>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<app-modal-advertencia
+  [mostrar]="mostrarModal"
+  [tipoAdvertencia]="tipoAdvertencia"
+  [mensaje]="mensajeModal"
+  (onConfirmar)="eliminarProductoConfirmada()"
+  (onCancelar)="cerrarModal()">
+</app-modal-advertencia>
