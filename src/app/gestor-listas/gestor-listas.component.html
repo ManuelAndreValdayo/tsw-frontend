@@ -1,70 +1,94 @@
-<div class="buscador">
-    <div class="nombreBuscador">
-        <div style="display: flex; padding-left: 20px;">
-            <i style="margin-right: 5px;" class="fa-duotone fa-solid fa-magnifying-glass"></i>
-            <p><b>BUSCADOR LISTAS</b></p>
-        </div>
-        <div style="display: flex;">
-            <div class="botonAnadir">
-                <div class="contenidoBotonAnadir" (click)="openInsertarLista()">
-                    <i style="margin-right: 15px;" class="fa-solid fa-plus"></i>
-                    <p>AÑADIR LISTA</p>
-                </div>
-            </div>
-        </div>
+<section class="listas-view">
+  <!-- TOOLBAR -->
+  <header class="toolbar">
+    <div class="toolbar-left">
+      <div class="title">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>BUSCADOR LISTAS</span>
+      </div>
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Nombre lista"
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearch()"
+          aria-label="Buscar lista" />
+        <button class="btn-search" (click)="onSearch()">BUSCAR</button>
+      </div>
     </div>
-    <div class="contenidoBuscador">
-        <div>
-            <div class="contenedorFlex">
-                <input type="text" placeholder="nombre lista">
-                <div class="botonBuscar">
-                    <div class="contenidoBotonBuscar">
-                      <p>BUSCAR</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <button class="btn-add" (click)="openInsertarLista()">
+      <i class="fa-solid fa-plus"></i>
+      <span>AÑADIR LISTA</span>
+    </button>
+  </header>
 
-</div>
-<div id="contenedorListas">
-    <div style="display: flex; flex-direction: row;">
-        <div class="acciones">
-            <p><b>ACCIONES</b></p>
-        </div>
-        <div style="width: 100%; display: flex;">
-            <div class="atributo campoFormAncho_70">
-                <p><b>NOMBRE</b></p>
-            </div>
-            <div class="atributo campoFormAncho_30">
-                <p><b>FECHA</b></p>
-            </div>
-        </div>
-        <div class="info"></div>
-    </div>
-    <div class="divlista" *ngFor="let lista of listas; let i = index">
-        <div class="listaAcciones">
-            <i class="fa-solid fa-pen" title="Modificar lista" (click)="openModificarLista(lista.lista.id)"></i>
-            <i *ngIf="lista.compartida == false" class="fa-solid fa-trash" title="Eliminar Lista" (click)="eliminarLista('confirmación', '¿Estás seguro de eliminar esta lista?', lista.lista.id)"></i>
-            <i routerLink="../productos" [queryParams]="{id: lista.lista.id}" class="fa-solid fa-cart-shopping" title="Ver Productos"></i>
-            <i class="fa-solid fa-share-from-square" title="Compartir lista" (click)="compartirLista(lista.lista.id)"></i>
-        </div>
-        <div class="campoFormAncho_100" style="display: flex;">
-            <div class="listaAtributo campoFormAncho_70">
-            <p>{{ lista.lista.nombre || 'Sin nombre' }}</p>
-            </div>
-            <div class="listaAtributo campoFormAncho_30">
-            <p>{{ lista.lista.fecha_creacion | date:'dd/MM/yyyy' }}</p>
-            </div>
-        </div>
-        <div class="listaAcciones">
-            <i class="fa-solid fa-user-group" title="Ver miembros" (click)="openVerMiembros(lista.lista.id,lista.compartida)"></i>
-        </div>
-    </div>
-    <div *ngIf="listas.length == 0" class="sinListas">
-        <p>NO SE HAN ENCOTRADO LISTAS</p>
-    </div>
-</div>
-<app-modal-add-listas *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idLista]="idLista"></app-modal-add-listas>
-<app-modal-advertencia [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="eliminarListaConfirmada()" (onCancelar)="cerrarModal()"></app-modal-advertencia>
-<app-mto-url *ngIf="sharedModal" [url]="url" (sharedModalClose)="sharedModal = false" ></app-mto-url>
+  <!-- TABLA DE LISTAS -->
+  <div class="table-wrapper">
+    <table class="listas-table">
+      <colgroup>
+        <col style="width: 10%;" />
+        <col style="width: 50%;" />
+        <col style="width: 20%;" />
+        <col style="width: 20%;" />
+      </colgroup>
+      <caption class="sr-only">Listas de la compra</caption>
+      <thead>
+        <tr>
+          <th>Acciones</th>
+          <th>Nombre</th>
+          <th>Creación</th>
+          <th>Miembros</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lista of listasFiltradas()">
+          <td class="acciones-cell">
+            <button class="icon-button" title="Editar" (click)="openModificarLista(lista.lista.id)">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            <button
+              *ngIf="!lista.compartida"
+              class="icon-button"
+              title="Eliminar"
+              (click)="eliminarLista('confirmación','¿Eliminar esta lista?', lista.lista.id)">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+          <td>{{ lista.lista.nombre || 'Sin nombre' }}</td>
+          <td>{{ lista.lista.fecha_creacion | date:'dd/MM/yyyy' }}</td>
+          <td class="acciones-cell">
+            <button
+              class="icon-button"
+              title="Miembros"
+              (click)="openVerMiembros(lista.lista.id, lista.compartida)">
+              <i class="fa-solid fa-user-group"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="listas.length === 0">
+          <td colspan="4" class="no-data">NO HAY LISTAS DISPONIBLES</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODALES (idéntico a antes) -->
+  <app-modal-add-listas
+    *ngIf="isModalOpen"
+    (modalClose)="isModalOpen = false"
+    [tipoAccion]="intAccion"
+    [idLista]="idLista">
+  </app-modal-add-listas>
+  <app-modal-advertencia
+    [tipoAdvertencia]="tipoAdvertencia"
+    [mensaje]="mensajeModal"
+    [mostrar]="mostrarModal"
+    (onConfirmar)="eliminarListaConfirmada()"
+    (onCancelar)="cerrarModal()">
+  </app-modal-advertencia>
+  <app-mto-url
+    *ngIf="sharedModal"
+    [url]="url"
+    (sharedModalClose)="sharedModal = false">
+  </app-mto-url>
+</section>

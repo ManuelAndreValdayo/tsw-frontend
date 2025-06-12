@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
-import { ListaCompraService } from '../listaCompra.service';
-import {INSERTAR, MODIFICAR, ELIMINAR} from '../shared/constantes';
-import { Router, RouterLink } from '@angular/router';
-import {MtoUrlComponent} from '../mto-url/mto-url.component';
-import * as CryptoJS from 'crypto-js';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.component';
-import { ModalMiembrosListaComponent } from '../modal-miembros-lista/modal-miembros-lista.component';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { ListaCompraService } from '../listaCompra.service';
+import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.component';
+import { ModalAdvertenciaComponent } from '../modal-advertencia/modal-advertencia.component';
+import { ModalMiembrosListaComponent } from '../modal-miembros-lista/modal-miembros-lista.component';
+import { MtoUrlComponent } from '../mto-url/mto-url.component';
+import { MODIFICAR } from '../shared/constantes';
 interface Lista {
   lista: {
     id: number;
@@ -25,20 +25,22 @@ interface Lista {
 @Component({
   selector: 'app-gestor-listas',
   standalone: true,
-  imports: [CommonModule, ModalAddListasComponent, ModalAdvertenciaComponent, RouterLink, MtoUrlComponent],
+  imports: [CommonModule, ModalAddListasComponent, ModalAdvertenciaComponent, FormsModule, MtoUrlComponent],
   templateUrl: './gestor-listas.component.html',
   styleUrls: ['./gestor-listas.component.css'],
 })
 export class GestorListasComponent {
   @Output() onInsertar = new EventEmitter<void>(); // Confirmar acción
   @Input() onModificar = new EventEmitter<void>(); // Confirmar acción
-  isModalOpen = false;
   listas: Lista[] = []; // Declaramos listas como un array de objetos Lista
-  mostrarModal: boolean = false; // Controla si el modal está visible
-  tipoAdvertencia: string = ''; // Tipo de advertencia actual
-  mensajeModal: string = ''; // Mensaje del modal
-  idLista: number = 0;
+  searchTerm: string = ''; // Término de búsqueda para filtrar listas
+
+  isModalOpen = false;
   intAccion: number = 0;
+  idLista: number = 0;
+  tipoAdvertencia: string = ''; // Tipo de advertencia actual
+  mostrarModal: boolean = false; // Controla si el modal está visible
+  mensajeModal: string = ''; // Mensaje del modal
   url: string = '';
   sharedModal:boolean = false;
   secretKey = 'miClaveSecreta123';
@@ -51,6 +53,40 @@ export class GestorListasComponent {
     this.mensajeModal = mensaje;
     this.mostrarModal = true;
     this.idLista = id;
+  }
+
+  ngOnInit() {
+    this.listaCompraService.obtenerListasUsuario().subscribe({
+      next: (response) => {
+        // Verificar si la respuesta es un string y parsearlo si es necesario
+        if (typeof response === 'string') {
+          try {
+            // for( item of JSON.parse(response)){}
+            this.listas = JSON.parse(response); // Convertimos a array si es un string
+          } catch (error) {
+            console.error('Error al parsear el JSON:', error);
+          }
+        } else {
+          this.listas = response; // Si ya es un array, simplemente lo asignamos
+        }
+
+      },
+      error: (error) => {
+        console.error('Error al obtener los datos:', error);
+      },
+    });
+  }
+
+    onSearch(): void {}
+
+    listasFiltradas(): Lista[] {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      return this.listas;
+    }
+    return this.listas.filter(lista =>
+      lista.lista.nombre?.toLowerCase().includes(term)
+    );
   }
 
   // Cerrar el modal
@@ -100,27 +136,6 @@ export class GestorListasComponent {
     this.isModalOpen = true;
   }
 
-  ngOnInit() {
-    this.listaCompraService.obtenerListasUsuario().subscribe({
-      next: (response) => {
-        // Verificar si la respuesta es un string y parsearlo si es necesario
-        if (typeof response === 'string') {
-          try {
-            // for( item of JSON.parse(response)){}
-            this.listas = JSON.parse(response); // Convertimos a array si es un string
-          } catch (error) {
-            console.error('Error al parsear el JSON:', error);
-          }
-        } else {
-          this.listas = response; // Si ya es un array, simplemente lo asignamos
-        }
-
-      },
-      error: (error) => {
-        console.error('Error al obtener los datos:', error);
-      },
-    });
-  }
 
   fncModificarLista(id: any){
     this.listaCompraService
