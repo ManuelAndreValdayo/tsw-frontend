@@ -30,18 +30,31 @@ export class GestionSeccionesComponent implements OnInit {
   stripe: Stripe | null = null; // Inicializa stripe como null
   sessionId: string = ''; // Aquí se guardará el session_id recibido desde el backend
   isPremium: boolean = false; // Variable para verificar si el usuario es premium
+  email: string = ''; // Variable para almacenar el email del usuario
   constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router, private stripeService: StripeService) {   
   
   }
   ngOnInit() {
     this.userService.checkPremium().subscribe({
       next: (response) => {
-        console.log('Respuesta de checkLogin:', response);
-        console.log(response);
-        if(response== 'false') {
-          this.isPremium = false;
+        if(response.status== 200) {
+          if(response.body != "false") {
+            this.isPremium = true;
+          }
+          }
+      },
+      error: (error) => {
+        console.error(error);
+        console.error('Error al verificar el login:', error);
+      },
+    });
+    this.userService.obtenerMiUsuario().subscribe({
+      next: (response) => {
+        if(response.status== 200) {
+          this.email = JSON.parse(response.body).email;
         }else{
-          this.isPremium = true;
+          this.email = "no encontrado";
+
         }
       },
       error: (error) => {
@@ -49,7 +62,6 @@ export class GestionSeccionesComponent implements OnInit {
         console.error('Error al verificar el login:', error);
       },
     });
-
     // Escuchar los eventos de navegación
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -107,7 +119,7 @@ export class GestionSeccionesComponent implements OnInit {
       //     }
       //   }
       // );
-      let url = "https://localhost:4200"+this.router.url;
+      let url = "http://localhost:4200"+this.router.url;
       this.stripeService.checkoutSession(300,url).subscribe(
         (Response: any) => {
           if(Response != "") {

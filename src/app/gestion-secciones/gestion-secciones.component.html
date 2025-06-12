@@ -4,8 +4,14 @@
         <!-- <a href="Gestion">Inicio</a>
         <a href="Login">Login</a>
         <a href="Register">Registro</a> -->
-        <p *ngIf="isPremium == true" (click)="abrirStripe()">Pasate a premium</p>
-        <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion('confirmación', '¿Estás seguro de que quieres cerrar sesión?')"></i>
+        <div class="contentName">
+            <i class="fas fa-user-circle" style="color: white;"></i>
+            <p>{{email}}</p>
+        </div>
+        <div class="contentPremium">
+            <p *ngIf="isPremium != false" (click)="abrirStripe()">Pasate a premium</p>
+            <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion('confirmación', '¿Estás seguro de que quieres cerrar sesión?')"></i>
+        </div>
         <!-- <div class="premium">
         </div> -->
       </div>

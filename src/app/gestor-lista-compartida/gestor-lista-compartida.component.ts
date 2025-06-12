@@ -87,7 +87,6 @@ export class GestorListaCompartidaComponent{
     this.idProducto = id;
   }
   fncCargarProductos(){
-    console.log(this.idLista);
     this.userService.obtenerProductos(this.idLista).subscribe({
       next: (response) => {
         // Verificar si la respuesta es un string y parsearlo si es necesario

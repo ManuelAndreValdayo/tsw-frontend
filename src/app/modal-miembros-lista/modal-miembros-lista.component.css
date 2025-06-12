@@ -16,3 +16,9 @@
     cursor: pointer;
 
 }
+.contenedorMiembrosLista{
+    margin: 0 2rem;
+}
+.miembrosLista{
+    margin-bottom: 2rem;
+}

@@ -120,10 +120,11 @@
 }
 
 .contenidoNavegador{
-    /* margin: 14px; */
     display: flex;
-    align-items: center;
     margin-right: 1rem;
+    width: 100%;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 .contenidoNavegador > p{
     cursor: pointer;
@@ -153,9 +154,21 @@
     cursor: pointer;
     margin: 16px 0px;
 }
-.premium{
-
-}
 .premium > p{
     color: white;
+}
+.contentName{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+.contentName > p{
+    margin-left: 1rem;
+}
+.contentName > i{
+font-size: 1.5rem;
+}
+.contentPremium{
+    display: flex;
 }

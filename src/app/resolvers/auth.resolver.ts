@@ -10,7 +10,6 @@ export class AuthResolver implements Resolve<boolean> {
   constructor(private userService: UserService, private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-    console.log(state.url);
     let url = state.url.split('/')
     if(url[1] == 'listaCompartida'){
       if(url.length > 2){

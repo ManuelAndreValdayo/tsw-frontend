@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { UserService } from '../user.service';
+import { ListaCompraService } from '../listaCompra.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -27,7 +27,7 @@ export class ModalAddListasComponent {
     lista: Lista[] = []; // Declaramos listas como un array de objetos Lista
     submitted = false;
 
-    constructor(private userService : UserService, private router:Router) {    
+    constructor(private listaCompraService : ListaCompraService, private router:Router) {    
     }
 
 
@@ -37,7 +37,7 @@ export class ModalAddListasComponent {
         if (!this.validarForm()) {
           return; // No continuar si el formulario no es válido
         }
-        this.userService.anadirLista(this.nombreLista).subscribe(
+        this.listaCompraService.anadirLista(this.nombreLista).subscribe(
         ok => {
         this.submitted = true;
             // Mensaje de confirmación

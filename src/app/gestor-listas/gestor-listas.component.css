@@ -95,6 +95,10 @@ input{
     height: 40px;
     background: black;
     margin: 20px 10px 0px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .atributo{
     display: flex;

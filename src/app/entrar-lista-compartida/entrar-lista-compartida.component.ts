@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { UserService } from '../user.service';
+import { ListaCompraService } from '../listaCompra.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 @Component({
@@ -11,14 +11,22 @@ import Swal from 'sweetalert2';
 })
 export class EntrarListaCompartidaComponent {
 
-    constructor(private userService: UserService, private route: ActivatedRoute, private router: Router) {}
+    constructor(private listaCompraService: ListaCompraService, private route: ActivatedRoute, private router: Router) {}
   
   confirmar(){
-    this.userService.agregarUserListaCompartida().subscribe({
+    this.listaCompraService.agregarUserListaCompartida().subscribe({
       next: (response) => {
-        console.log(response);
-        // Aquí puedes manejar la respuesta exitosa
 
+        console.log(JSON.parse(response.body));
+        // Aquí puedes manejar la respuesta exitosa
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Te has unido a la lista compartida correctamente.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          this.router.navigate(['/Gestion/listas']);
+        });
       },
       error: (error) => {
         // Aquí puedes manejar el error
@@ -72,6 +80,6 @@ export class EntrarListaCompartidaComponent {
     })
   }
   cancelar() {
-
+    this.router.navigate(['/Gestion/listas']);
   }
 }

@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UserService } from '../user.service';
+import { ListaCompraService } from '../listaCompra.service';
 import Swal from 'sweetalert2';
 @Component({
   selector: 'app-modal-eliminar-miembro',
@@ -12,9 +12,9 @@ import Swal from 'sweetalert2';
 })
 export class ModalEliminarMiembroComponent {
 
-  constructor(private dialogRef: MatDialogRef<ModalEliminarMiembroComponent>, private userService: UserService,@Inject(MAT_DIALOG_DATA) public data: any,) {}
+  constructor(private dialogRef: MatDialogRef<ModalEliminarMiembroComponent>, private listaCompraService: ListaCompraService,@Inject(MAT_DIALOG_DATA) public data: any,) {}
   confirmar(){
-    this.userService.eliminarMiembroLista(this.data.idListaCompartida).subscribe({
+    this.listaCompraService.eliminarMiembroLista(this.data.idListaCompartida, this.data.idLista).subscribe({
       next: (response) => {
         console.log("Miembro eliminado correctamente",response);
         this.dialogRef.close(true); // Cierra el modal y devuelve true para indicar éxito
@@ -24,6 +24,7 @@ export class ModalEliminarMiembroComponent {
           icon: 'success',
           confirmButtonText: 'OK'
         }).then((result) => {
+            this.data.recargar();
             this.dialogRef.close();
         });
       },

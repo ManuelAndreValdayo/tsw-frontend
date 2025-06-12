@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
-import { UserService } from '../user.service';
+import { ListaCompraService } from '../listaCompra.service';
 import {INSERTAR, MODIFICAR, ELIMINAR} from '../shared/constantes';
 import { Router, RouterLink } from '@angular/router';
 import {MtoUrlComponent} from '../mto-url/mto-url.component';
@@ -11,11 +11,15 @@ import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.co
 import { ModalMiembrosListaComponent } from '../modal-miembros-lista/modal-miembros-lista.component';
 import Swal from 'sweetalert2';
 interface Lista {
-  id: number;
-  nombre: string;
-  idUsuario: number;
-  Nombre: string;
-  id_usuario: number;
+  lista: {
+    id: number;
+    nombre: string;
+    idUsuario: number;
+    Nombre: string;
+    id_usuario: number;
+    fecha_creacion: number;
+  }
+  compartida: boolean;
 }
 
 @Component({
@@ -39,7 +43,7 @@ export class GestorListasComponent {
   sharedModal:boolean = false;
   secretKey = 'miClaveSecreta123';
 
-  constructor(private userService: UserService, private dialog: MatDialog, private router: Router) {}
+  constructor(private listaCompraService: ListaCompraService, private dialog: MatDialog, private router: Router) {}
 
   // Abrir el modal con un tipo y mensaje específico
   abrirModal(tipo: string, mensaje: string, id: number) {
@@ -69,10 +73,13 @@ export class GestorListasComponent {
       data: { /* puedes pasar datos si quieres */ }
     });
   }
-    openVerMiembros(id: number) {
+    openVerMiembros(id: number, compartida: boolean) {
     this.dialog.open(ModalMiembrosListaComponent, {
       width: 'auto',
-      data: { idLista: id } // Pasamos el id de la lista al modal
+      data: { 
+        idLista: id,
+        compartida: compartida
+      } // Pasamos el id de la lista al modal
     });
   }
     openModificarLista(id: number) {
@@ -94,11 +101,12 @@ export class GestorListasComponent {
   }
 
   ngOnInit() {
-    this.userService.obtenerListasUsuario().subscribe({
+    this.listaCompraService.obtenerListasUsuario().subscribe({
       next: (response) => {
         // Verificar si la respuesta es un string y parsearlo si es necesario
         if (typeof response === 'string') {
           try {
+            // for( item of JSON.parse(response)){}
             this.listas = JSON.parse(response); // Convertimos a array si es un string
           } catch (error) {
             console.error('Error al parsear el JSON:', error);
@@ -115,11 +123,10 @@ export class GestorListasComponent {
   }
 
   fncModificarLista(id: any){
-    this.userService
+    this.listaCompraService
   }
   fncEliminarLista(id: number){
-    console.log("opa");
-    this.userService.eliminarLista(id).subscribe({
+    this.listaCompraService.eliminarLista(id).subscribe({
       next: (response: any) => {
         if(response == true){
           window.location.reload();
@@ -137,7 +144,7 @@ export class GestorListasComponent {
     // const encrypted = CryptoJS.AES.encrypt(numberAsString, this.secretKey).toString();
     // this.url = `${window.location.origin}/listaCompartida/${encodeURIComponent(encrypted)}`;
     // this.openSharedModal();
-    this.userService.crearListaCompartida(idLista).subscribe({
+    this.listaCompraService.crearListaCompartida(idLista).subscribe({
       next: (response: any) => {
         console.log(response.status)
           if(response.status == 201){

@@ -29,28 +29,36 @@
 </div>
 <div id="contenedorListas">
     <div style="display: flex; flex-direction: row;">
-        <div class="acciones"></div>
+        <div class="acciones">
+            <p><b>ACCIONES</b></p>
+        </div>
         <div style="width: 100%; display: flex;">
-            <div class="atributo">
+            <div class="atributo campoFormAncho_70">
                 <p><b>NOMBRE</b></p>
+            </div>
+            <div class="atributo campoFormAncho_30">
+                <p><b>FECHA</b></p>
             </div>
         </div>
         <div class="info"></div>
     </div>
-    <div class="divlista" *ngFor="let lista of listas">
+    <div class="divlista" *ngFor="let lista of listas; let i = index">
         <div class="listaAcciones">
-            <i class="fa-solid fa-pen" title="Modificar lista" (click)="openModificarLista(lista.id)"></i>
-            <i class="fa-solid fa-trash" title="Eliminar Lista" (click)="eliminarLista('confirmación', '¿Estás seguro de eliminar esta lista?', lista.id)"></i>
-            <i routerLink="../productos" [queryParams]="{id: lista.id}" class="fa-solid fa-cart-shopping" title="Ver Productos"></i>
-            <i class="fa-solid fa-share-from-square" title="Compartir lista" (click)="compartirLista(lista.id)"></i>
+            <i class="fa-solid fa-pen" title="Modificar lista" (click)="openModificarLista(lista.lista.id)"></i>
+            <i *ngIf="lista.compartida == false" class="fa-solid fa-trash" title="Eliminar Lista" (click)="eliminarLista('confirmación', '¿Estás seguro de eliminar esta lista?', lista.lista.id)"></i>
+            <i routerLink="../productos" [queryParams]="{id: lista.lista.id}" class="fa-solid fa-cart-shopping" title="Ver Productos"></i>
+            <i class="fa-solid fa-share-from-square" title="Compartir lista" (click)="compartirLista(lista.lista.id)"></i>
         </div>
-        <div style="width: 100%; display: flex;">
-            <div class="listaAtributo">
-            <p>{{ lista.nombre || 'Sin nombre' }}</p>
+        <div class="campoFormAncho_100" style="display: flex;">
+            <div class="listaAtributo campoFormAncho_70">
+            <p>{{ lista.lista.nombre || 'Sin nombre' }}</p>
+            </div>
+            <div class="listaAtributo campoFormAncho_30">
+            <p>{{ lista.lista.fecha_creacion | date:'dd/MM/yyyy' }}</p>
             </div>
         </div>
         <div class="listaAcciones">
-            <i class="fa-solid fa-user-group" title="Ver miembros" (click)="openVerMiembros(lista.id)"></i>
+            <i class="fa-solid fa-user-group" title="Ver miembros" (click)="openVerMiembros(lista.lista.id,lista.compartida)"></i>
         </div>
     </div>
     <div *ngIf="listas.length == 0" class="sinListas">
