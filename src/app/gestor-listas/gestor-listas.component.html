@@ -13,7 +13,6 @@
           [(ngModel)]="searchTerm"
           (ngModelChange)="onSearch()"
           aria-label="Buscar lista" />
-        <button class="btn-search" (click)="onSearch()">BUSCAR</button>
       </div>
     </div>
     <button class="btn-add" (click)="openInsertarLista()">
@@ -24,7 +23,7 @@
 
   <!-- TABLA DE LISTAS -->
   <div class="table-wrapper">
-    <table class="listas-table">
+    <table class="listas-table tabla-50px">
       <colgroup>
         <col style="width: 10%;" />
         <col style="width: 50%;" />
@@ -53,6 +52,13 @@
               (click)="eliminarLista('confirmación','¿Eliminar esta lista?', lista.lista.id)">
               <i class="fa-solid fa-trash"></i>
             </button>
+            <button
+                routerLink="../productos"
+                [queryParams]="{ id: lista.lista.id }"
+                class="icon-button"
+                title="Ver productos">
+                <i class="fa-solid fa-shopping-cart"></i>
+            </button>
           </td>
           <td>{{ lista.lista.nombre || 'Sin nombre' }}</td>
           <td>{{ lista.lista.fecha_creacion | date:'dd/MM/yyyy' }}</td>
@@ -62,6 +68,12 @@
               title="Miembros"
               (click)="openVerMiembros(lista.lista.id, lista.compartida)">
               <i class="fa-solid fa-user-group"></i>
+            </button>            
+            <button
+                (click)="compartirLista(lista.lista.id)"
+                class="icon-button"
+                title="Compartir lista">
+                <i class="fa-solid fa-share-from-square"></i>
             </button>
           </td>
         </tr>

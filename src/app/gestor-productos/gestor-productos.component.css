@@ -99,10 +99,14 @@
 
 .productos-table tbody td {
   background: #dbdbdb;
-  padding: 10px;
   text-align: center;
   vertical-align: middle;
   border-radius: 5px;
+}
+
+.productos-table tbody tr {
+  height: 50px;
+  max-height: 50px;
 }
 
 .acciones-cell,
@@ -129,7 +133,6 @@
   height: 30px;
   border-radius: 5px;
   border: none;
-  padding: 0 5px;
   background: #dadada;
 }
 
@@ -154,12 +157,6 @@
   text-align: center;
   font-weight: bold;
   background: #dbdbdb;
-}
-
-.action-placeholder {
-  display: inline-block;
-  width: 32px;   /* o el ancho que necesites */
-  height: 50px;  /* para igualar al botón */
 }
 
 /* sombreado trasero */

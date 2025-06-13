@@ -54,6 +54,7 @@ export class GestorProductosComponent implements OnInit, OnDestroy {
   mensajeModal = '';
   mostrarModal = false;
   private idToDelete: number | null = null;
+  propietarioId: number = 0;
 
   constructor(
     private userService: UserService,
@@ -93,9 +94,10 @@ export class GestorProductosComponent implements OnInit, OnDestroy {
         this.stompClient.subscribe(
           `/app/listas/${this.idLista}/productos`,
           (msg: Message) => {
-            const raw = JSON.parse(msg.body) as any[];
-            console.log('📥 Snapshot:', raw);
-            this.productos = raw.map(r => this.mapToProducto(r));
+            console.log('📥 Snapshot:', msg);
+            const { productos, propietarioId } = JSON.parse(msg.body);
+            this.propietarioId = propietarioId;
+            this.productos = (productos as any[]).map((r: any) => this.mapToProducto(r));
             console.log('➡️ Mappeados:', this.productos);
           }
         );

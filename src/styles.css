@@ -99,3 +99,52 @@ input{
     font-size: 11px;
     color: red;
 }
+
+/* ---------------------------------------------------
+   1. Clase para aplicar a cualquier tabla que quieras
+      con filas de 50px exactos
+   --------------------------------------------------- */
+.tabla-50px {
+  width: 100%;
+  table-layout: fixed;        /* ancho de columna fijo según contenido mínimo */
+  border-collapse: separate;
+  border-spacing: 0;          /* sin espacios extra entre celdas */
+}
+
+/* ---------------------------------------------------
+   2. Forzamos altura + centrado vertical
+   --------------------------------------------------- */
+.tabla-50px th,
+.tabla-50px td {
+  height: 50px !important;    /* altura exacta */
+  line-height: 50px !important; /* texto centrado verticalmente */
+  padding: 0 12px !important; /* 12px a izquierda/derecha, cero arriba/abajo */
+  vertical-align: middle !important;
+  overflow: hidden !important;/* recorta contenido sobrante */
+  box-sizing: border-box !important;
+  white-space: nowrap;        /* evita que cambie el alto al hacer wrap */
+}
+
+/* ---------------------------------------------------
+   3. Si dentro de la celda tienes DIVs, inputs o botones,
+      les obligamos a no crecer más de esos 50px
+   --------------------------------------------------- */
+.tabla-50px td > * {
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 10 !important;
+  box-sizing: border-box !important;
+}
+
+/* ---------------------------------------------------
+   4. (Opcional) Para contenido complejo, envuélvelo y
+      usa flexbox para centrarlo mejor
+   --------------------------------------------------- */
+.celda-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}

@@ -56,6 +56,7 @@
 /* ==== Botón de añadir ==== */
 .btn-add {
   display: flex;
+  cursor: pointer;
   align-items: center;
   gap: 0.5rem;
   background: #000;
@@ -74,7 +75,7 @@
 
 /* ==== Tabla ==== */
 .table-wrapper {
-  margin: 20px 0;
+  margin: 20pX;
   overflow-x: auto;
 }
 
@@ -101,7 +102,6 @@
 }
 
 .acciones-cell {
-  display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
@@ -114,8 +114,8 @@
   font-size: 1.2em;
   cursor: pointer;
   transition: color 0.2s;
-  color: #333;
 }
+
 .icon-button:hover {
   color: #555;
 }

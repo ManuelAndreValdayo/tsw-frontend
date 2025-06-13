@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ListaCompraService } from '../listaCompra.service';
 import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.component';
@@ -25,7 +25,7 @@ interface Lista {
 @Component({
   selector: 'app-gestor-listas',
   standalone: true,
-  imports: [CommonModule, ModalAddListasComponent, ModalAdvertenciaComponent, FormsModule, MtoUrlComponent],
+  imports: [CommonModule, ModalAddListasComponent, ModalAdvertenciaComponent, FormsModule, RouterLink, MtoUrlComponent],
   templateUrl: './gestor-listas.component.html',
   styleUrls: ['./gestor-listas.component.css'],
 })
