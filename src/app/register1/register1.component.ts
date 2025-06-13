@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Importa CommonModule
-import { FormBuilder, FormsModule, FormGroup, Validators,ReactiveFormsModule, ValidatorFn, ValidationErrors, AbstractControl } from '@angular/forms'; 
-import { UserService } from '../user.service';
-import $ from 'jquery';	// Importa jQuery
-import Swal from 'sweetalert2';
+import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { UserService } from '../user.service';
+
 
 @Component({
   selector: 'app-register1',
@@ -18,6 +18,14 @@ export class Register1Component {
   contraseniasNoCoinciden: boolean
   errorEnRegistro: boolean
   registerForm: FormGroup
+  
+  passwordMatchValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+    const p1 = group.get('pwd1')?.value;
+    const p2 = group.get('pwd2')?.value;
+    return p1 && p2 && p1 !== p2
+      ? { passwordMismatch: true }
+      : null;
+  };
 
   constructor(private formBuild: FormBuilder,private service : UserService, private router:Router) { 
     this.respuestaOK = false;
@@ -28,14 +36,26 @@ export class Register1Component {
         email: ['', [Validators.required, Validators.email]],
         pwd1: ['', [Validators.required, Validators.minLength(8), createPasswordStrengthValidator()]],
         pwd2: ['',[Validators.required]],
-        nombre: [''],
-        apellidos: [''],
-        telefono: ['']
-      }
+        nombre: ['',[Validators.required]],
+        apellidos: ['',[Validators.required]],
+        telefono: ['', [Validators.pattern(/^[0-9]{9}$/)]]
+      },
+      {validators: this.passwordMatchValidator}
     );
   }
+
   validarFormulario() {
     this.registerForm.markAllAsTouched(); // Marca todos los campos como 'touched'
+  
+    // Recorre controles inválidos y fuerza reflow para reiniciar la animación
+  Object.keys(this.registerForm.controls).forEach(name => {
+    const el = document.querySelector<HTMLInputElement>(`[formControlName="${name}"]`);
+    if (el && el.classList.contains('is-invalid')) {
+      el.classList.remove('invalid-pulse');
+      void el.offsetWidth;    // fuerza reflow
+      el.classList.add('invalid-pulse');
+    }
+  });
   
     if (this.registerForm.valid) {
       console.log('Formulario válido');
