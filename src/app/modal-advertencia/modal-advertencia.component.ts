@@ -1,5 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-modal-advertencia',
@@ -9,26 +10,25 @@ import { CommonModule } from '@angular/common';
   styleUrl: './modal-advertencia.component.css'
 })
 export class ModalAdvertenciaComponent {
-  @Input() tipoAdvertencia: string = ''; // Tipo de advertencia: 'confirmación', 'error', 'info'
-  @Input() mensaje: string = ''; // Mensaje del modal
-  @Input() mostrar: boolean = false; // Controla si el modal está visible
-  @Output() onConfirmar = new EventEmitter<void>(); // Confirmar acción
-  @Output() onCancelar = new EventEmitter<void>(); // Cancelar acción
+  constructor(
+    public dialogRef: MatDialogRef<ModalAdvertenciaComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
-  // Emitir evento de confirmación
+    // ✅ Getters para que el HTML funcione igual que antes
+  get tipoAdvertencia(): string {
+    return this.data.tipoAdvertencia;
+  }
+
+  get mensaje(): string {
+    return this.data.mensaje;
+  }
+
   confirmar() {
-    this.onConfirmar.emit();
-    this.cerrar();
+    this.dialogRef.close(true);
   }
 
-  // Emitir evento de cancelación
   cancelar() {
-    this.onCancelar.emit();
-    this.cerrar();
-  }
-
-  // Cerrar el modal
-  cerrar() {
-    this.mostrar = false;
+    this.dialogRef.close(false);
   }
 }

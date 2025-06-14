@@ -1,59 +1,119 @@
-*{
-    font-family: "Roboto", sans-serif;
-}
-/* FORMULARIO */
-.formularioRegistrar{
-    position:absolute;
-    top: 25%;
-    left: 35%;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    background-color: beige;
-    width: 30vw;
-    border-radius: 5px;
-    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
-
+/* 1. Define la animación */
+@keyframes pulse {
+  0%   { transform: scale(1);    }
+  50%  { transform: scale(1.02); }
+  100% { transform: scale(1);    }
 }
 
-.formularioRegistrarCampos{
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
+/* 2. Clase que aplica la animación */
+.invalid-pulse {
+  animation: pulse 0.4s ease-in-out;
 }
-.formularioRegistrarCampos > input{
-    height: 30px;
-    border-radius: 5px;
-    margin: 10px;
-    border: none;
+input.is-invalid.invalid-pulse {
+  outline: none;
+  /* opcional: refuerza el borde rojo durante el pulso */
+  box-shadow: 0 0 0 .2rem rgba(220,53,69,.25);
 }
 
-.botonRegistrar{
-    width: 100px;
-    height: 30px;
-    margin: 10px;
-    background-color: black;
-    border-radius: 5px;
-    border: solid 1px black;
-    transition: 0.3s;
-    color: white;
+.formularioRegistrar {
+  position: absolute;
+  top: 25%;
+  left: 35%;
+  display: flex;
+  flex-direction: column;
+  background-color: beige;
+  width: 30vw;
+  border-radius: 5px;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.botonRegistrar:hover{
-    background-color: white;
-    color: black;
-    cursor: pointer;
+.formularioRegistrarCampos {
+  display: flex;
+  flex-direction: column;
 }
 
-.botonRegistrar > p{
-    margin: 6px 0px 0px 12px;
+/* Inputs */
+.formularioRegistrarCampos > input {
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+  margin: 10px;
+  padding-left: 10px;
 }
 
-.oculto{
-    display: none;
+/* Borde rojo fino para inputs inválidos */
+input.is-invalid {
+  border: 1px solid #d32f2f !important;
+  background-color: transparent;
+  box-shadow: none !important;
 }
-#login a{
-    margin: 20px;
-    font-size: 11px;
-    color: blue;
+input.is-invalid:focus {
+  outline: none;
+  border: 1px solid #d32f2f !important;
+}
+
+/* Mensajes de validación inline */
+.invalid-feedback {
+  display: block;
+  background: rgba(211, 47, 47, 0.05);
+  margin: 0 10px 10px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+input.is-invalid + .invalid-feedback,
+.invalid-feedback span {
+  opacity: 1;
+  transform: translateY(0);
+}
+.invalid-feedback span {
+  color: #c82333;
+  font-weight: bold;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+/* Botón registrar igual que botón login */
+.botonRegistrar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 30px;
+  margin: 10px;
+  background-color: black;
+  border-radius: 5px;
+  border: 1px solid black;
+  transition: 0.3s;
+  color: white;
+  padding: 0 10px;
+}
+.botonRegistrar:hover {
+  background-color: white;
+  color: black;
+  cursor: pointer;
+}
+
+/* Enlace a login */
+.noCredenciales {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 20px;
+}
+.noCredenciales a {
+  margin: 5px;
+  font-size: 11px;
+  text-decoration: underline;
+  cursor: pointer;
+  color: #0056b3;
+}
+.noCredenciales a:hover {
+  color: #003f7f;
+}
+
+/* Padding extra abajo para la sección de inputs */
+.custom-form .formularioRegistrarCampos {
+  padding-bottom: 1rem;
 }

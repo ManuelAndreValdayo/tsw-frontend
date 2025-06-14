@@ -29,8 +29,13 @@
 </div>
 
 <div class="productos-container">
-  <table class="productos-table">
+  <table class="productos-table tabla-50px">
     <caption class="sr-only">Lista de productos</caption>
+    <col style="width: 10%;" />   <!-- Acciones -->
+    <col style="width: 35%;" />   <!-- Nombre -->
+    <col style="width: 15%;" />   <!-- Total -->
+    <col style="width: 15%;" />   <!-- Comprado -->
+    <col style="width: 25%;" />   <!-- Añadir compra -->
     <thead>
       <tr>
         <th scope="col">Acciones</th>
@@ -44,11 +49,11 @@
       <tr *ngFor="let producto of filteredProductos()"
           [class.comprado]="producto.cantidad_comprada >= producto.cantidad">
         <td class="acciones-cell">
-          <ng-container *ngIf="producto.id_creador === currentUserId; else placeholderActions">
+          <ng-container *ngIf="producto.id_creador === currentUserId || propietarioId === currentUserId; else placeholderActions">
             <button class="icon-button" (click)="openModalAndPrepare(MODIFICAR, producto)">
               <i class="fa-solid fa-pen"></i>
             </button>
-            <button class="icon-button" (click)="confirmDelete(producto.id)">
+            <button class="icon-button" (click)="openEliminarProducto(producto.id, producto.nombre)">
               <i class="fa-solid fa-trash"></i>
             </button>
           </ng-container>
@@ -94,12 +99,3 @@
     (modalSave)="onModalSave($event)">
   </app-mto-productos>
 </div>
-
-<!-- Modal de confirmación de eliminación -->
-<app-modal-advertencia
-  [mostrar]="mostrarModal"
-  [tipoAdvertencia]="tipoAdvertencia"
-  [mensaje]="mensajeModal"
-  (onConfirmar)="eliminarProductoConfirmada()"
-  (onCancelar)="cerrarModal()">
-</app-modal-advertencia>

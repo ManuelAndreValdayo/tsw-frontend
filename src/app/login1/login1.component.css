@@ -1,3 +1,19 @@
+/* 1. Define la animación */
+@keyframes pulse {
+  0%   { transform: scale(1);    }
+  50%  { transform: scale(1.02); }
+  100% { transform: scale(1);    }
+}
+
+/* 2. Clase que aplica la animación */
+.invalid-pulse {
+  animation: pulse 0.4s ease-in-out;
+}
+input.is-invalid.invalid-pulse {
+  outline: none;
+  /* opcional: refuerza el borde rojo durante el pulso */
+  box-shadow: 0 0 0 .2rem rgba(220,53,69,.25);
+}
 
 /* FORMULARIO */
 .formularioLogin{
@@ -11,8 +27,15 @@
     width: 30vw;
     border-radius: 5px;
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.5);
-
 }
+
+/* 2. Estructura BEM y layout limpio */
+.formularioLogin__actions {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
 
 .formularioLoginCampos{
     display: flex;
@@ -22,8 +45,8 @@
 .formularioLoginCampos > input{
     height: 30px;
     border-radius: 5px;
-    margin: 10px;
     border: none;
+    margin: 10px;
     padding-left: 10px;
 }
 
@@ -63,8 +86,56 @@
     flex-direction: column;
     align-items: flex-end;
 }
-.noCredenciales a{
-    margin: 5px 20px;
-    font-size: 11px;
-    color: blue;
+
+.noCredenciales a {
+  margin: 5px 20px;
+  font-size: 11px;
+  text-decoration: underline; /* subrayado */
+  cursor: pointer;            /* mano al pasar */
+  color: #0056b3;             /* azul típico de enlaces */
+}
+
+.noCredenciales a:hover {
+  color: #003f7f;             /* tono más oscuro al hover */
+}
+/* Asegura que el contenedor del formulario tenga algo de padding extra */
+.custom-form .formularioLoginCampos {
+  padding-bottom: 1rem;  /* espacio bajo los campos antes del botón */
+}
+
+/* El texto dentro en negrita y rojo */
+.invalid-feedback span {
+  color: #c82333;       /* rojo oscuro */
+  font-weight: bold;    /* negrita */
+  font-size: 0.75rem;  /* ligeramente más pequeño que el label */
+  line-height: 1.2;
+}
+
+/* Espacio extra bajo cada input inválido */
+input.is-invalid {
+  border: 1px solid #d32f2f !important;  /* rojo vivo, 1px de ancho */
+  background-color: #ffeef0;  /* rosa muy suave, opcional */
+  box-shadow: none !important;           /* quita cualquier halo */
+}
+
+/* Mantener el mismo borde al enfocar */
+input.is-invalid:focus {
+  border: 1px solid #d32f2f !important;
+  outline: none;                         /* quita el outline por defecto */
+  background-color: #ffeef0;  /* rosa muy suave, opcional */
+}
+
+/* 3. Error message transition (igual que antes) */
+.invalid-feedback {
+  background: rgba(211,47,47,.05);
+  margin: 0 10px 10px;
+  padding: .25rem .5rem;
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+input.is-invalid + .invalid-feedback {
+  opacity: 1;
+  transform: translateY(0);
 }
