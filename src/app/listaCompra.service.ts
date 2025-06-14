@@ -80,10 +80,7 @@
         'Authorization' : `Bearer ${token}`
     }
     let info = {
-      token: tokenListaCompartida,
-      lista:  {
-        "id": idLista
-      }
+      token: tokenListaCompartida
     }
     return this.http.post<any>(`${this.apiUrl2}/agregarUserListaCompartida`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
