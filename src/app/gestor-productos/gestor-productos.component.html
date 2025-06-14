@@ -53,7 +53,7 @@
             <button class="icon-button" (click)="openModalAndPrepare(MODIFICAR, producto)">
               <i class="fa-solid fa-pen"></i>
             </button>
-            <button class="icon-button" (click)="confirmDelete(producto.id)">
+            <button class="icon-button" (click)="openEliminarProducto(producto.id, producto.nombre)">
               <i class="fa-solid fa-trash"></i>
             </button>
           </ng-container>
@@ -99,12 +99,3 @@
     (modalSave)="onModalSave($event)">
   </app-mto-productos>
 </div>
-
-<!-- Modal de confirmación de eliminación -->
-<app-modal-advertencia
-  [mostrar]="mostrarModal"
-  [tipoAdvertencia]="tipoAdvertencia"
-  [mensaje]="mensajeModal"
-  (onConfirmar)="eliminarProductoConfirmada()"
-  (onCancelar)="cerrarModal()">
-</app-modal-advertencia>

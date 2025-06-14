@@ -9,7 +9,6 @@ import { ModalAddListasComponent } from '../modal-add-listas/modal-add-listas.co
 import { ModalAdvertenciaComponent } from '../modal-advertencia/modal-advertencia.component';
 import { ModalMiembrosListaComponent } from '../modal-miembros-lista/modal-miembros-lista.component';
 import { MtoUrlComponent } from '../mto-url/mto-url.component';
-import { MODIFICAR } from '../shared/constantes';
 interface Lista {
   lista: {
     id: number;
@@ -38,24 +37,28 @@ export class GestorListasComponent {
   isModalOpen = false;
   intAccion: number = 0;
   idLista: number = 0;
-  tipoAdvertencia: string = ''; // Tipo de advertencia actual
-  mostrarModal: boolean = false; // Controla si el modal está visible
-  mensajeModal: string = ''; // Mensaje del modal
   url: string = '';
   sharedModal:boolean = false;
-  secretKey = 'miClaveSecreta123';
 
   constructor(private listaCompraService: ListaCompraService, private dialog: MatDialog, private router: Router) {}
 
-  // Abrir el modal con un tipo y mensaje específico
-  abrirModal(tipo: string, mensaje: string, id: number) {
-    this.tipoAdvertencia = tipo;
-    this.mensajeModal = mensaje;
-    this.mostrarModal = true;
-    this.idLista = id;
+  ngOnInit() {
+    this.cargarListas(); // Asegúrate de tener un método que recargue las listas del backend
   }
 
-  ngOnInit() {
+  onSearch(): void {}
+
+  listasFiltradas(): Lista[] {
+    const term = this.searchTerm.trim().toLowerCase();
+    if (!term) {
+      return this.listas;
+    }
+    return this.listas.filter(lista =>
+      lista.lista.nombre?.toLowerCase().includes(term)
+    );
+  }
+
+  cargarListas(): void {
     this.listaCompraService.obtenerListasUsuario().subscribe({
       next: (response) => {
         // Verificar si la respuesta es un string y parsearlo si es necesario
@@ -77,39 +80,14 @@ export class GestorListasComponent {
     });
   }
 
-    onSearch(): void {}
-
-    listasFiltradas(): Lista[] {
-    const term = this.searchTerm.trim().toLowerCase();
-    if (!term) {
-      return this.listas;
+  handleModalClose(listaCreada: boolean): void {
+    this.isModalOpen = false;
+    if (listaCreada) {
+      this.cargarListas(); // Asegúrate de tener un método que recargue las listas del backend
     }
-    return this.listas.filter(lista =>
-      lista.lista.nombre?.toLowerCase().includes(term)
-    );
   }
 
-  // Cerrar el modal
-  cerrarModal() {
-    this.mostrarModal = false;
-  }
-
-  // Confirmar acción (por ejemplo, eliminar una lista)
-  eliminarListaConfirmada() {
-    this.fncEliminarLista(this.idLista);
-    this.cerrarModal();
-  }
-  modificarLista(id: number){
-    this.openModal();
-
-  }
-  openInsertarLista() {
-    this.dialog.open(ModalAddListasComponent, {
-      width: 'auto',
-      data: { /* puedes pasar datos si quieres */ }
-    });
-  }
-    openVerMiembros(id: number, compartida: boolean) {
+  openVerMiembros(id: number, compartida: boolean) {
     this.dialog.open(ModalMiembrosListaComponent, {
       width: 'auto',
       data: { 
@@ -118,47 +96,54 @@ export class GestorListasComponent {
       } // Pasamos el id de la lista al modal
     });
   }
-    openModificarLista(id: number) {
-      this.intAccion = MODIFICAR;
-      this.idLista = id;
-      this.dialog.open(ModalAddListasComponent, {
-        width: 'auto',
-        data: { /* puedes pasar datos si quieres */ }
-      });
-  }
-  eliminarLista(tipo: string, mensaje: string, id: number){
-    this.tipoAdvertencia = tipo;
-    this.mensajeModal = mensaje;
-    this.mostrarModal = true;
-    this.idLista = id;
-  }
-  openModal() {
-    this.isModalOpen = true;
-  }
+  
+  openInsertarLista() {
+    const dialogRef = this.dialog.open(ModalAddListasComponent, {
+      width: 'auto',
+      data: { tipoAccion: 1 } // 👈 se pasa explícitamente
+    });
 
-
-  fncModificarLista(id: any){
-    this.listaCompraService
-  }
-  fncEliminarLista(id: number){
-    this.listaCompraService.eliminarLista(id).subscribe({
-      next: (response: any) => {
-        if(response == true){
-          window.location.reload();
-        }
-      },
-      error: (error) => {
-        console.error('Error al obtener los datos:', error);
-      },
+    dialogRef.afterClosed().subscribe((listaCreada: boolean) => {
+      if (listaCreada) this.cargarListas();
     });
   }
 
+  openModificarLista(id: number, nombre: string) {
+    const dialogRef = this.dialog.open(ModalAddListasComponent, {
+      width: 'auto',
+      data: { tipoAccion: 2, idLista: id, nombreLista: nombre } // 👈 se pasan los datos necesarios
+    });
+
+    dialogRef.afterClosed().subscribe((listaModificada: boolean) => {
+      if (listaModificada) this.cargarListas();
+    });
+  }
+
+  openEliminarLista(idLista: number, nombreLista: string): void {
+    const dialogRef = this.dialog.open(ModalAdvertenciaComponent, {
+      width: 'auto',
+      data: {
+        tipoAdvertencia: 'confirmación',
+        mensaje: `¿Eliminar la lista "${nombreLista}"?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.listaCompraService.eliminarLista(idLista).subscribe({
+          next: () => {
+            this.cargarListas();
+            Swal.fire('Eliminada', 'La lista se eliminó correctamente', 'success');
+          },
+          error: () => {
+            Swal.fire('Error', 'No se pudo eliminar la lista', 'error');
+          }
+        });
+      }
+    });
+  }
   // Función para encriptar
   compartirLista(idLista: number){
-    // const numberAsString = idLista.toString(); // Convertir el número a string
-    // const encrypted = CryptoJS.AES.encrypt(numberAsString, this.secretKey).toString();
-    // this.url = `${window.location.origin}/listaCompartida/${encodeURIComponent(encrypted)}`;
-    // this.openSharedModal();
     this.listaCompraService.crearListaCompartida(idLista).subscribe({
       next: (response: any) => {
         console.log(response.status)

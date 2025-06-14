@@ -1,54 +1,20 @@
 <div>
     <nav class="navegador">
       <div class="contenidoNavegador">
-        <!-- <a href="Gestion">Inicio</a>
-        <a href="Login">Login</a>
-        <a href="Register">Registro</a> -->
         <div class="contentName">
             <i class="fas fa-user-circle" style="color: white;"></i>
             <p>{{email}}</p>
         </div>
         <div class="contentPremium">
             <p *ngIf="isPremium != false" (click)="abrirStripe()">Pasate a premium</p>
-            <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion('confirmación', '¿Estás seguro de que quieres cerrar sesión?')"></i>
+            <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion()"></i>
         </div>
-        <!-- <div class="premium">
-        </div> -->
       </div>
     </nav>
-    <!-- <div class="gestionSecciones">
-        <nav>
-            <div class="contenedorChincheta show-screen">
-                <i class="fas fa-thumbtack seleccionado" id="chincheta" (click)="fncClickChincheta();" aria-hidden="true"></i>
-            </div>
-            <div class="nombreGestion">
-                <div class="gestion" (click)="toogleHeight(1);">
-                    <i class="fas fa-user" aria-hidden="true"></i>
-                    <span class="icono"><b>GESTIÓN PRODUCTOS</b></span>
-                </div>
-                <div class="seccion" [class.expanded]="gestion1" >
-                    <ul class="secciones" [ngStyle]="{'display' : gestion1 ? 'flex' : 'none' }">
-                        <a routerLink="productos">Productos</a>
-                        <a routerLink="listas">Lista Compra</a>
-                    </ul>
-                </div>
-            </div>
-            <div class="nombreGestion">
-                <div class="gestion" (click)="toogleHeight(2);">
-                    <i class="fas fa-user" aria-hidden="true"></i>
-                    <span class="icono"><b>GESTIÓN USUARIOS</b></span>
-                </div>
-                <div class="seccion" [class.expanded]="gestion2"></div>
-            </div>
-        </nav>
-    </div> -->
     <div id="contenidoSecciones">
         <router-outlet></router-outlet>
     </div>
     <div>
-    
     </div>
-
 </div>
-<app-modal-advertencia [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="confirmarCerrarSesion()" (onCancelar)="cerrarModal()"></app-modal-advertencia>
 

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common'; // Usar CommonModule en lugar de BrowserModule
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Client, Frame, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
@@ -49,17 +50,13 @@ export class GestorProductosComponent implements OnInit, OnDestroy {
   readonly INSERTAR = 1;
   readonly MODIFICAR = 2;
 
-  // Modal advertencia
-  tipoAdvertencia = '';
-  mensajeModal = '';
-  mostrarModal = false;
-  private idToDelete: number | null = null;
   propietarioId: number = 0;
 
   constructor(
     private userService: UserService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     // Decodifica el subject (userId) del JWT
     const token = this.userService.getToken();
@@ -156,31 +153,29 @@ export class GestorProductosComponent implements OnInit, OnDestroy {
 
   onSearch(): void { /* Client-side filter */ }
 
-  confirmDelete(id: number): void {
-    this.idToDelete = id;
-    this.tipoAdvertencia = 'confirmación';
-    this.mensajeModal = '¿Seguro que deseas eliminar este producto?';
-    this.mostrarModal = true;
-  }
+  
+  openEliminarProducto(productoId: number, nombre: string): void {
+    const dialogRef = this.dialog.open(ModalAdvertenciaComponent, {
+      width: 'auto',
+      data: {
+        tipoAdvertencia: 'confirmación',
+        mensaje: `¿Eliminar el producto "${nombre}"?`
+      }
+    });
 
-  eliminarProductoConfirmada(): void {
-    if (this.idToDelete != null) {
-      this.stompClient.publish({
-        destination: `/app/listas/${this.idLista}/productos/${this.idToDelete}/eliminar`,
-        body: ''
-      });
-    }
-    this.cerrarModal();
+    dialogRef.afterClosed().subscribe((confirmado: boolean) => {
+      if (confirmado) {
+        this.stompClient.publish({
+          destination: `/app/listas/${this.idLista}/productos/${productoId}/eliminar`,
+          body: ''
+        });
+      }
+    });
   }
 
   closeModal(): void {
     this.isModalOpen = false;
     this.idProducto = null;
-  }
-
-  cerrarModal(): void {
-    this.mostrarModal = false;
-    this.idToDelete = null;
   }
 
   openModalAndPrepare(action: number, prod?: Producto): void {

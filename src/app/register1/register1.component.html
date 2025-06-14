@@ -12,7 +12,7 @@
         placeholder="*EMAIL"
         [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
       />
-      <div id="email-error" class="invalid-feedback" *ngIf="registerForm.get('email')?.touched">
+      <div id="email-error" class="invalid-feedback" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
         <span *ngIf="registerForm.get('email')?.hasError('required')">
           * El email es obligatorio.
         </span>
@@ -62,7 +62,7 @@
         placeholder="*PASSWORD"
         [class.is-invalid]="registerForm.get('pwd1')?.invalid && registerForm.get('pwd1')?.touched"
       />
-      <div id="pwd1-error" class="invalid-feedback" *ngIf="registerForm.get('pwd1')?.touched">
+      <div id="pwd1-error" class="invalid-feedback" *ngIf="registerForm.get('pwd1')?.touched && registerForm.get('pwd1')?.invalid">
         <span *ngIf="registerForm.get('pwd1')?.hasError('required')">
           * La contraseña es obligatoria.
         </span>
@@ -81,7 +81,7 @@
         placeholder="*CONFIRMAR PASSWORD"
         [class.is-invalid]="(registerForm.get('pwd2')?.invalid || registerForm.hasError('passwordMismatch')) && registerForm.get('pwd2')?.touched"
       />
-      <div id="pwd2-error" class="invalid-feedback" *ngIf="registerForm.get('pwd2')?.touched">
+      <div id="pwd2-error" class="invalid-feedback" *ngIf="registerForm.get('pwd2')?.touched && (registerForm.get('pwd2')?.invalid || registerForm.hasError('passwordMismatch'))">
         <span *ngIf="registerForm.get('pwd2')?.hasError('required')">
           * Debes confirmar la contraseña.
         </span>

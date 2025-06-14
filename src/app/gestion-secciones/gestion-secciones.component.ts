@@ -1,15 +1,14 @@
-import { Component, ElementRef, OnInit, ViewChild, } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterOutlet, NavigationEnd, RouterLink } from '@angular/router';
-import {ModalAdvertenciaComponent} from '../modal-advertencia/modal-advertencia.component';
-import { StripeService } from '../stripe.service';
+import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import Swal from 'sweetalert2';
+import { ModalAdvertenciaComponent } from '../modal-advertencia/modal-advertencia.component';
+import { StripeService } from '../stripe.service';
 
 
-import $ from 'jquery';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../user.service';
-import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-gestion-secciones',
@@ -31,7 +30,7 @@ export class GestionSeccionesComponent implements OnInit {
   sessionId: string = ''; // Aquí se guardará el session_id recibido desde el backend
   isPremium: boolean = false; // Variable para verificar si el usuario es premium
   email: string = ''; // Variable para almacenar el email del usuario
-  constructor(private formBuilder: FormBuilder, private userService : UserService, private router:Router, private stripeService: StripeService) {   
+  constructor(private dialog: MatDialog, private userService : UserService, private router:Router, private stripeService: StripeService) {   
   
   }
   ngOnInit() {
@@ -82,11 +81,24 @@ export class GestionSeccionesComponent implements OnInit {
         break;
     }
   }
-  cerrarSesion(tipo: string, mensaje: string) {
-    this.tipoAdvertencia = tipo;
-    this.mensajeModal = mensaje;
-    this.mostrarModal = true;
-  }
+
+cerrarSesion(): void {
+  const dialogRef = this.dialog.open(ModalAdvertenciaComponent, {
+    width: 'auto',
+    data: {
+      tipoAdvertencia: 'confirmación',
+      mensaje: '¿Deseas cerrar sesión?'
+    }
+  });
+
+  dialogRef.afterClosed().subscribe((confirmado: boolean) => {
+    if (confirmado) {
+      this.confirmarCerrarSesion(); // llama a tu método real de logout
+    } else {
+      this.cerrarModal(); // si necesitas limpiar estado, aunque ya no uses mostrarModal
+    }
+  });
+}
   confirmarCerrarSesion() {
     this.fncCerrarSesion();
     this.cerrarModal();

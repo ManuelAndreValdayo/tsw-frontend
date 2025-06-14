@@ -42,38 +42,42 @@
       <tbody>
         <tr *ngFor="let lista of listasFiltradas()">
           <td class="acciones-cell">
-            <button class="icon-button" title="Editar" (click)="openModificarLista(lista.lista.id)">
+            <button class="icon-button" title="Editar" (click)="openModificarLista(lista.lista.id, lista.lista.nombre)">
               <i class="fa-solid fa-pen"></i>
             </button>
             <button
+              id="delete-btn"
               *ngIf="!lista.compartida"
               class="icon-button"
               title="Eliminar"
-              (click)="eliminarLista('confirmación','¿Eliminar esta lista?', lista.lista.id)">
+              (click)="openEliminarLista(lista.lista.id, lista.lista.nombre)">
               <i class="fa-solid fa-trash"></i>
             </button>
             <button
-                routerLink="../productos"
-                [queryParams]="{ id: lista.lista.id }"
-                class="icon-button"
-                title="Ver productos">
-                <i class="fa-solid fa-shopping-cart"></i>
+              id="products-btn"
+              routerLink="../productos"
+              [queryParams]="{ id: lista.lista.id }"
+              class="icon-button"
+              title="Ver productos">
+              <i class="fa-solid fa-shopping-cart"></i>
             </button>
           </td>
           <td>{{ lista.lista.nombre || 'Sin nombre' }}</td>
           <td>{{ lista.lista.fecha_creacion | date:'dd/MM/yyyy' }}</td>
           <td class="acciones-cell">
             <button
+              id="members-btn"
               class="icon-button"
               title="Miembros"
               (click)="openVerMiembros(lista.lista.id, lista.compartida)">
               <i class="fa-solid fa-user-group"></i>
             </button>            
             <button
-                (click)="compartirLista(lista.lista.id)"
-                class="icon-button"
-                title="Compartir lista">
-                <i class="fa-solid fa-share-from-square"></i>
+              id="share-btn"
+              (click)="compartirLista(lista.lista.id)"
+              class="icon-button"
+              title="Compartir lista">
+              <i class="fa-solid fa-share-from-square"></i>
             </button>
           </td>
         </tr>
@@ -87,17 +91,10 @@
   <!-- MODALES (idéntico a antes) -->
   <app-modal-add-listas
     *ngIf="isModalOpen"
-    (modalClose)="isModalOpen = false"
+    (modalClose)="handleModalClose($event)"
     [tipoAccion]="intAccion"
     [idLista]="idLista">
   </app-modal-add-listas>
-  <app-modal-advertencia
-    [tipoAdvertencia]="tipoAdvertencia"
-    [mensaje]="mensajeModal"
-    [mostrar]="mostrarModal"
-    (onConfirmar)="eliminarListaConfirmada()"
-    (onCancelar)="cerrarModal()">
-  </app-modal-advertencia>
   <app-mto-url
     *ngIf="sharedModal"
     [url]="url"
