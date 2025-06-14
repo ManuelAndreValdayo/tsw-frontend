@@ -44,10 +44,10 @@
     </div>
     <div class="divlista" *ngFor="let lista of listas; let i = index">
         <div class="listaAcciones">
-            <i class="fa-solid fa-pen" title="Modificar lista" (click)="openModificarLista(lista.lista.id)"></i>
+            <i class="fa-solid fa-pen" title="Modificar lista" (click)="openModificarLista(lista.lista.id,lista.lista.nombre)"></i>
             <i *ngIf="lista.compartida == false" class="fa-solid fa-trash" title="Eliminar Lista" (click)="eliminarLista('confirmación', '¿Estás seguro de eliminar esta lista?', lista.lista.id)"></i>
             <i routerLink="../productos" [queryParams]="{id: lista.lista.id}" class="fa-solid fa-cart-shopping" title="Ver Productos"></i>
-            <i class="fa-solid fa-share-from-square" title="Compartir lista" (click)="compartirLista(lista.lista.id)"></i>
+            <i *ngIf="lista.compartida == false" class="fa-solid fa-share-from-square" title="Compartir lista" (click)="compartirLista(lista.lista.id)"></i>
         </div>
         <div class="campoFormAncho_100" style="display: flex;">
             <div class="listaAtributo campoFormAncho_70">
@@ -65,6 +65,5 @@
         <p>NO SE HAN ENCOTRADO LISTAS</p>
     </div>
 </div>
-<app-modal-add-listas *ngIf="isModalOpen" (modalClose)="isModalOpen = false" [tipoAccion]="intAccion" [idLista]="idLista"></app-modal-add-listas>
 <app-modal-advertencia [tipoAdvertencia]="tipoAdvertencia" [mensaje]="mensajeModal" [mostrar]="mostrarModal" (onConfirmar)="eliminarListaConfirmada()" (onCancelar)="cerrarModal()"></app-modal-advertencia>
 <app-mto-url *ngIf="sharedModal" [url]="url" (sharedModalClose)="sharedModal = false" ></app-mto-url>

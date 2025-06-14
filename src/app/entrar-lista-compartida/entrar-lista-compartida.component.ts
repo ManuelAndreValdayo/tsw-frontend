@@ -64,6 +64,17 @@ export class EntrarListaCompartidaComponent {
             });
             console.error('Error al agregar usuario a la lista compartida:', error);
             break;
+          case 411:
+            Swal.fire({
+              title: 'Warning',
+              text: 'Pasate a premium para invitar a mas usuarios a la lista compartida.',
+              icon: 'warning',
+              confirmButtonText: 'OK'
+            }).then((result) => {
+              this.router.navigate(['/Gestion/listas']);
+            });
+            console.error('Error al agregar usuario a la lista compartida:', error);
+            break;
           case 500:
             Swal.fire({
               title: 'Error',

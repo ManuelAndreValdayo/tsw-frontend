@@ -82,12 +82,12 @@ export class GestorListasComponent {
       } // Pasamos el id de la lista al modal
     });
   }
-    openModificarLista(id: number) {
+    openModificarLista(id: number, nombre: string) {
       this.intAccion = MODIFICAR;
       this.idLista = id;
       this.dialog.open(ModalAddListasComponent, {
         width: 'auto',
-        data: { /* puedes pasar datos si quieres */ }
+        data: { intAccion: this.intAccion, idLista: id , nombreLista: nombre }
       });
   }
   eliminarLista(tipo: string, mensaje: string, id: number){

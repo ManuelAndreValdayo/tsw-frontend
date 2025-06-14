@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 })
 export class ModalEliminarMiembroComponent {
 
-  constructor(private dialogRef: MatDialogRef<ModalEliminarMiembroComponent>, private listaCompraService: ListaCompraService,@Inject(MAT_DIALOG_DATA) public data: any,) {}
+  constructor(private dialogRef: MatDialogRef<ModalEliminarMiembroComponent>, private listaCompraService: ListaCompraService,@Inject(MAT_DIALOG_DATA) public data: any) {}
   confirmar(){
     this.listaCompraService.eliminarMiembroLista(this.data.idListaCompartida, this.data.idLista).subscribe({
       next: (response) => {

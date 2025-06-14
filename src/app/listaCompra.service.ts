@@ -20,6 +20,18 @@
     // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
     return this.http.post<any>(`${this.apiUrl2}/crearLista`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
   }
+    modificarLista(nombre : string, idLista: number) {
+    const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
+    const headers = {
+        'Authorization' : `Bearer ${token}`
+    }
+    let info = {
+      id: idLista,
+      Nombre : nombre
+    }
+    // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
+    return this.http.put<any>(`${this.apiUrl2}/modificarLista`, info, { headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
+  }
   eliminarMiembroLista(id: number, idLista: number) {
     const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
     const headers = {
@@ -31,18 +43,7 @@
     } 
     return this.http.post<any>(`${this.apiUrl2}/eliminarMiembroLista`,info, {headers, responseType: 'text' as 'json', withCredentials : true})
   }
-    modificarLista(id: number,nombre : string) {
-        const token = (localStorage.getItem('access_token')) ? localStorage.getItem('access_token') : "";
-    const headers = {
-        'Authorization' : `Bearer ${token}`
-    }
-    let info = {
-      id: id,
-      Nombre : nombre
-    }
-    // return this.http.get<any>(`${this.apiUrl}/prueba`, { responseType: 'text' as 'json', withCredentials : true})
-    return this.http.put<any>(`${this.apiUrl2}/modificarLista`, info, {headers, responseType: 'text' as 'json', withCredentials : true}).pipe();
-  }
+
   obtenerLista(id: number){
     return this.http.get<any>(`${this.apiUrl2}/getLista/${id}`, { responseType: 'text' as 'json', withCredentials : true})
   }
@@ -79,7 +80,10 @@
         'Authorization' : `Bearer ${token}`
     }
     let info = {
-      token: tokenListaCompartida
+      token: tokenListaCompartida,
+      lista:  {
+        "id": idLista
+      }
     }
     return this.http.post<any>(`${this.apiUrl2}/agregarUserListaCompartida`, info,{ headers, responseType: 'text' as 'json', withCredentials : true , observe: 'response' }).pipe();
   }
