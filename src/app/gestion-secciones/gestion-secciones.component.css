@@ -13,6 +13,40 @@
     top: 50px;
 }
 
+.badge-premium {
+  background-color: gold;
+  color: black;
+  font-weight: bold;
+  padding:0 10px;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  margin-left: 1rem;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+
+.btn-premium {
+  background-color: #ffcc00;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 0 10px;
+  gap: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin: 10px 20px;
+  transition: background-color 0.3s;
+}
+
+.btn-premium:hover {
+  background-color: #a38405;
+}
+
 .gestionSecciones:hover{
     transition: 0.3 ease;
     clip-path: inset(0px 0px 0px 0px) !important;
@@ -134,9 +168,6 @@
     color: white !important;
     text-decoration: none !important;
 }
-.contenidoNavegador i{
-    padding-left: 1rem;
-}
 /* .gestionSecciones{
     width: 10px;
     height: 100%;
@@ -161,7 +192,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-
+    padding-left: 1rem;
 }
 .contentName > p{
     margin-left: 1rem;

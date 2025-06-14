@@ -1,20 +1,24 @@
 <div>
-    <nav class="navegador">
-      <div class="contenidoNavegador">
-        <div class="contentName">
-            <i class="fas fa-user-circle" style="color: white;"></i>
-            <p>{{email}}</p>
-        </div>
-        <div class="contentPremium">
-            <p *ngIf="isPremium != false" (click)="abrirStripe()">Pasate a premium</p>
-            <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion()"></i>
-        </div>
+  <nav class="navegador">
+    <div class="contenidoNavegador">
+      <div class="contentName">
+          <i class="fas fa-user-circle" style="color: white;"></i>
+          <div *ngIf="!isPremium" class="badge-premium">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <p>{{email}}</p>
       </div>
-    </nav>
-    <div id="contenidoSecciones">
-        <router-outlet></router-outlet>
+      <div class="contentPremium">
+        <button *ngIf="isPremium" class="btn-premium" (click)="abrirStripe()">
+          <i class="fa-solid fa-star"></i>
+          Pásate a Premium
+        </button>
+        <i id="cerrarSesion" class="fa-solid fa-right-from-bracket" (click)="cerrarSesion()"></i>
+      </div>
     </div>
-    <div>
-    </div>
+  </nav>
+  <div id="contenidoSecciones">
+    <router-outlet></router-outlet>
+  </div>
 </div>
 

@@ -35,6 +35,10 @@ export class ModalAddListasComponent {
       this.nombreLista = data?.nombreLista || '';
     }
 
+    get nombreAccion(): string {
+      return this.tipoAccion === 1 ? 'Añadir' : 'Modificar';
+    }
+
     submitForm(){
       this.submitted = true;
 

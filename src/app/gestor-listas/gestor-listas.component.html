@@ -42,7 +42,12 @@
       <tbody>
         <tr *ngFor="let lista of listasFiltradas()">
           <td class="acciones-cell">
-            <button class="icon-button" title="Editar" (click)="openModificarLista(lista.lista.id, lista.lista.nombre)">
+            <button 
+            id="edit-btn"
+            *ngIf="!lista.compartida"
+            class="icon-button" 
+            title="Editar" 
+            (click)="openModificarLista(lista.lista.id, lista.lista.nombre)">
               <i class="fa-solid fa-pen"></i>
             </button>
             <button
@@ -74,6 +79,7 @@
             </button>            
             <button
               id="share-btn"
+              *ngIf="!lista.compartida"
               (click)="compartirLista(lista.lista.id)"
               class="icon-button"
               title="Compartir lista">
