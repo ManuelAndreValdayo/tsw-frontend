@@ -27,6 +27,7 @@
         type="password"
         formControlName="pwd"
         placeholder="Introduce tu contraseña"
+        name="pwd"
         [class.is-invalid]="loginForm.get('pwd')?.invalid && loginForm.get('pwd')?.touched"
       />
       <div id="pwd-error"

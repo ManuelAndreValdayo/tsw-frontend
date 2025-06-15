@@ -74,6 +74,18 @@
 }
 
 /* ==== Tabla ==== */
+@media (max-width: 600px) {
+  .acciones-cell {
+    justify-content: flex-start;
+  }
+  .listas-table thead {
+    font-size: 0.85rem;
+  }
+  .icon-button {
+    font-size: 1rem;
+  }
+}
+
 .table-wrapper {
   margin: 20pX;
   overflow-x: auto;
@@ -83,6 +95,7 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 5px 10px;
+  table-layout: auto;
 }
 
 .listas-table thead th {
@@ -102,9 +115,11 @@
 }
 
 .acciones-cell {
+  /* display: flex; */
   justify-content: center;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* ==== Icon buttons ==== */
